@@ -1,7 +1,6 @@
 require_relative 'models'
 
 require 'roda'
-require 'tilt/sass'
 
 class App < Roda
   plugin :default_headers,
@@ -21,10 +20,8 @@ class App < Roda
     secret: (session_secret || SecureRandom.hex(40))
 
   plugin :csrf
-  plugin :flash
-  plugin :assets, css: 'app.scss', css_opts: {style: :compressed, cache: false}, timestamp_paths: true
-  plugin :render, escape: true
   plugin :multi_route
+  plugin :json
 
   Unreloader.require('routes'){}
 
@@ -33,7 +30,7 @@ class App < Roda
     r.multi_route
 
     r.root do
-      view 'index'
+      {'Hello': 'World!'}
     end
   end
 end
