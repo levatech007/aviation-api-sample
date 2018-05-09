@@ -26,11 +26,10 @@ class App < Roda
   Unreloader.require('routes'){}
 
   route do |r|
-    r.assets
     r.multi_route
 
     r.root do
-      {'Hello': 'World!'}
+      {'Hello': 'My aviation api is coming soon!'}
     end
   end
 end
