@@ -24,6 +24,7 @@ GEM
     rack-unreloader (1.6.0)
     rack_csrf (2.6.0)
       rack (>= 1.1.0)
+    rake (12.3.1)
     roda (3.7.0)
       rack
     sequel (5.8.0)
@@ -42,6 +43,7 @@ DEPENDENCIES
   minitest-hooks (>= 1.1.0)
   rack-unreloader
   rack_csrf
+  rake
   roda (>= 3)
   sequel (>= 5)
   sequel_pg
