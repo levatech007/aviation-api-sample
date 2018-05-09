@@ -95,28 +95,3 @@ task :web_spec do
 end
 
 last_line = __LINE__
-# Utils
-
-  require 'securerandom'
-  lower_name = name.gsub(/([a-z\d])([A-Z])/, '\1_\2').downcase
-  upper_name = lower_name.upcase
-
-  File.write('.env.rb', <<END)
-ENV['RACK_ENV'] ||= 'development'
-
-ENV['#{upper_name}_DATABASE_URL'] ||= case ENV['RACK_ENV']
-when 'test'
-  ENV['#{upper_name}_SESSION_SECRET'] ||= #{SecureRandom.urlsafe_base64(40).inspect}
-  ENV['#{upper_name}_DATABASE_URL'] ||= "postgres:///#{lower_name}_test?user=#{lower_name}"
-when 'production'
-  ENV['#{upper_name}_SESSION_SECRET'] ||= #{SecureRandom.urlsafe_base64(40).inspect}
-  ENV['#{upper_name}_DATABASE_URL'] ||= "postgres:///#{lower_name}_production?user=#{lower_name}"
-else
-  ENV['#{upper_name}_SESSION_SECRET'] ||= #{SecureRandom.urlsafe_base64(40).inspect}
-  ENV['#{upper_name}_DATABASE_URL'] ||= "postgres:///#{lower_name}_development?user=#{lower_name}"
-end
-END
-
-
-  File.write(__FILE__, File.read(__FILE__).split("\n")[0...(last_line-2)].join("\n") << "\n")
-end
