@@ -20,14 +20,11 @@ class App
           )
           api_key = @api_key
           email = r.params['email']
-
           if @apikey.save
             @send_email = ApiKeyEmail.new(email, api_key)
             @send_email.send_email()
-
             { status: "Created user" }
           end
-
         end
       end
     end
