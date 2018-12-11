@@ -4,7 +4,7 @@ class App
     r.on 'welcome' do
       @greeting = 'Welcome to Version 1'
 
-      # GET /welcome/world request
+      # test routes GET /welcome/world request
       r.get "world" do
         "#{@greeting}"
       end

@@ -10,6 +10,8 @@ GEM
       rack (>= 1.6.0)
       rack-test (>= 0.6.3)
       xpath (~> 3.0)
+    mail (2.7.1)
+      mini_mime (>= 0.1.1)
     mini_mime (1.0.0)
     mini_portile2 (2.3.0)
     minitest (5.11.3)
@@ -39,6 +41,7 @@ PLATFORMS
 
 DEPENDENCIES
   capybara
+  mail
   minitest (>= 5.7.0)
   minitest-hooks (>= 1.1.0)
   rack-unreloader

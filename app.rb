@@ -33,7 +33,10 @@ class App < Roda
 
 
     r.root do
-      {'Hello': 'My aviation api is coming soon!'}
+      {
+        Hello: 'My aviation api is coming soon!',
+         Available_test_route: '/api/apikey/generate'
+      }
     end
   end
 end
