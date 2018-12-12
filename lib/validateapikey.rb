@@ -4,11 +4,7 @@ class ValidateApiKey
   end
 
   def validate_key
-    # check if the key is in db
-    if Apikey.find(api_key: @api_key)
-      return {result: "Access granted"}
-    else
-      return {result: "Key does not exist"}
-    end 
+    return true if Apikey.find(api_key: @api_key)
+    return false
   end
 end

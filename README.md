@@ -1,11 +1,17 @@
-# aviation-api
-Rack based API to go with VOLO app 
+# Aviation API
+Rack based API to use with Volo app.  
 
 ## Technologies:
 - Rack
-- Roda
+- Roda Routing Tree
 - Sequel
 - Mail
+- RestClient
+
+## Current Features:
+- Request an api key (requires a valid email)
+- Generate and save api key  
+- Email new api key to client
 
 ## Third Party APIs Used:
 - [Lufthansa API (OAuth)](https://developer.lufthansa.com)
@@ -14,3 +20,7 @@ Rack based API to go with VOLO app
 
 - [Github - Front End](https://github.com/levatech007/volo-react-app)
 - [Github - Back End](https://github.com/levatech007/volo_rails_api)
+
+## Future Features:
+
+- Rate Limit (requests per day)

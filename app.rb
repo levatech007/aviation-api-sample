@@ -29,11 +29,15 @@ class App < Roda
     r.on 'api' do
       r.multi_route
     end
-    
+
     r.root do
       {
         Hello: 'My aviation api is coming soon!',
-         Available_test_route: '/api/apikey/generate'
+        # Usage: {
+        #   Routes: {
+        #     POST:
+        #   }
+        # }
       }
     end
   end
