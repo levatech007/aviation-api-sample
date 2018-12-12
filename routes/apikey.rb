@@ -1,19 +1,18 @@
 class App
   require 'securerandom'
-  require './lib/sendapikeyemail.rb'
   require './lib/generateapikey.rb'
 
   route 'apikey' do |r|
     r.on 'generate' do
       r.is do
-        r.get do
+        r.get do          
           {POST: "/api/apikey/generate will generate an api key"}
         end
         # POST api/apikey/generate to generate new api key
         r.post do
           if r.params['email']
             email = r.params['email']
-            @api_key = GenerateApiKey.new(email).generate_key()
+            GenerateApiKey.new(email).generate_key() #generates api key and emails to user
           else
            { error: "There was an error"}
           end

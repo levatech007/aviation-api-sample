@@ -1,12 +1,15 @@
 class App
   require './lib/gettoken.rb'
+  require './lib/validateapikey.rb'
   require 'rest-client'
 
   route 'v1.0' do |r|
     r.on 'welcome' do
       @greeting = 'Welcome to Version 1' #test
 
+
       r.get "flights" do
+        #validate api key
 
         #GET TOKEN FIRST
         @lh_token = GetToken.new.get_lh_token()
@@ -26,7 +29,13 @@ class App
       r.is do
         # GET /hello request
         r.get do
-          "#{@greeting}!"
+          #testing api key validation
+          key = r.params['api_key']
+          if key
+            ValidateApiKey.new(key).validate_key()
+          else
+            {result: "Please send your api key with request"}
+          end
         end
       end
     end

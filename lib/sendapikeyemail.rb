@@ -7,7 +7,7 @@ class SendApiKeyEmail
   end
 
   def send_email
-    to_email = @email #Mail.new does not recognize @email, needs a better workaround
+    to_email = @email #Mail.new does not recognize instance variables like @email, needs a better workaround
     html_template = ERB.new(File.read('views/api_key_email.html.erb')).result(binding)
     #text_template = ERB.new(File.read('views/api_key_email.text.erb')).result(binding)
     mail = Mail.new do
