@@ -1,6 +1,7 @@
 class App
   require 'securerandom'
-  require './lib/apikeyemail.rb'
+  require './lib/sendapikeyemail.rb'
+  require './lib/generateapikey.rb'
 
   route 'apikey' do |r|
     r.on 'generate' do
@@ -10,20 +11,11 @@ class App
         end
         # POST api/apikey/generate to generate new api key
         r.post do
-          @api_key = "api_v1_#{SecureRandom.urlsafe_base64}"
-          @rpd = 50 #request per day: set 50 as default for now
-          @email = r.params['email']
-          @apikey = Apikey.new(
-            api_key: @api_key,
-            api_rpd: @rpd,
-            email: @email
-          )
-          api_key = @api_key
-          email = r.params['email']
-          if @apikey.save
-            @send_email = ApiKeyEmail.new(email, api_key)
-            @send_email.send_email()
-            { status: "Created user" }
+          if r.params['email']
+            email = r.params['email']
+            @api_key = GenerateApiKey.new(email).generate_key()
+          else
+           { error: "There was an error"}
           end
         end
       end
