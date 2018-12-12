@@ -13,6 +13,9 @@ class GetToken
     payload: data,
     headers: { content_type: 'application/x-www-form-urlencoded' }
     )
+    result = JSON.parse(response)
+    p(result)
+    return result
   end
 
 end
