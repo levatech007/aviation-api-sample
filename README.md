@@ -3,6 +3,7 @@ Rack based API to use with Volo app.
 
 ## Technologies:
 - Rack
+- Redis
 - Roda Routing Tree
 - Sequel
 - Mail
@@ -23,4 +24,4 @@ Rack based API to use with Volo app.
 
 ## Future Features:
 
-- Rate Limit (requests per day)
+- Rate Limit (requests per day) - simple version working
