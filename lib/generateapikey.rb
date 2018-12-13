@@ -18,7 +18,7 @@ class GenerateApiKey
     email = @email
     if @apikey.save
       @send_email = SendApiKeyEmail.new(email, api_key).send_email()
-      return { status: "Created user" }
+      return { status: 200, message: "Please check your email for your new API key" }
     end
   end
 
