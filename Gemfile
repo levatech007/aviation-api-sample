@@ -8,6 +8,7 @@ gem 'mail'
 gem 'rack-unreloader'
 gem 'rake' #Heroku won't run rake tasks without the gem
 gem 'rest-client'
+gem 'redis'
 
 gem 'capybara'
 gem 'minitest', '>= 5.7.0'

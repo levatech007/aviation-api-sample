@@ -35,6 +35,7 @@ GEM
     rack_csrf (2.6.0)
       rack (>= 1.1.0)
     rake (12.3.1)
+    redis (4.1.0)
     rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
@@ -62,6 +63,7 @@ DEPENDENCIES
   rack-unreloader
   rack_csrf
   rake
+  redis
   rest-client
   roda (>= 3)
   sequel (>= 5)
