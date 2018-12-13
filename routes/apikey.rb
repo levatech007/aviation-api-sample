@@ -6,9 +6,6 @@ class App
   route 'apikey' do |r|
     r.on 'generate' do
       r.is do
-        r.get do
-          {POST: "/api/apikey/generate will generate an api key"}
-        end
         # POST api/apikey/generate to generate new api key
         r.post do
           to_email = r.params['email']
