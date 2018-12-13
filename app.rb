@@ -22,6 +22,7 @@ class App < Roda
   # plugin :csrf
   plugin :multi_route
   plugin :json
+  plugin :halt
 
   Unreloader.require('routes'){}
 

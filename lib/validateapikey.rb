@@ -5,6 +5,6 @@ class ValidateApiKey
 
   def validate_key
     return true if Apikey.find(api_key: @api_key)
-    return false
+    false
   end
 end
