@@ -1,0 +1,25 @@
+  {
+  "Intro": "Welcome to Aviation API. This application is currently under development. Please see below for available test routes.",
+  "Current routes":
+  {
+    "POST": {
+      "route": "/api/apikey/generate?email={your valid email}",
+      "params": "email",
+      "info": "Generates a new API key and emails the new key to the email included with the request. For testing, the rate limit is set to 10 requests per 15 minutes.",
+      "errors": {
+        "400": "Email is not present or email is invalid."
+      }
+    },
+      "GET": {
+        "route": "/api/v1/welcome/flights?api_key={your API key}",
+        "params": "api_key",
+        "info": "Currently shows Lufthansa direct flights from FRA and SFO.",
+        "errors": {
+          "400": "API key is missing or api_key is misspelled.",
+          "401": "The API key sent is invalid.",
+          "429": "You have exceeded the rate limit."
+        }
+      }
+    },
+    "Error format": "{ status: 4XX, error: 'General error name', message: 'Descriptive error message' }"
+  }

@@ -32,14 +32,8 @@ class App < Roda
     end
 
     r.root do
-      {
-        Hello: 'My aviation api is coming soon!',
-        # Usage: {
-        #   Routes: {
-        #     POST:
-        #   }
-        # }
-      }
+      file = File.read('documentation.json')
+      JSON.parse(file)
     end
   end
 end
