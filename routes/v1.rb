@@ -13,7 +13,7 @@ class App
             if RateLimiting.new.rate_limit_not_exceeded?(key)
               lh_token = GetToken.new.get_lh_token()
               auth = "#{ lh_token['token_type'].capitalize } #{ lh_token['access_token'] }" #format: "Bearer kfu894usdbj"
-              url = "https://api.lufthansa.com/v1/operations/schedules/FRA/SFO/2018-12-25?directFlights=1" #hardcoded params for now
+              url = "https://api.lufthansa.com/v1/operations/schedules/FRA/SFO/2019-02-24?directFlights=1" #hardcoded params for now
               response = RestClient::Request.execute(
               method: :get,
               url: url,
