@@ -3,7 +3,7 @@ class RateLimiting
   TIME_WINDOW = 15 * 60 #for testing purposes, time window is 15 min
   MAX_REQUESTS = 10
 
-  def rateLimitNotExceeded(api_key)
+  def rate_limit_not_exceeded?(api_key)
     redis = Redis.new
     key = "count:#{api_key}"
     count = redis.get(key)

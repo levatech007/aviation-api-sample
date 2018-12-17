@@ -13,7 +13,7 @@
       "GET": {
         "route": "/api/v1/welcome/flights?api_key={your API key}",
         "params": "api_key",
-        "info": "Currently shows Lufthansa direct flights from FRA and SFO.",
+        "info": "Currently shows Lufthansa direct flights from FRA to SFO.",
         "errors": {
           "400": "API key is missing or api_key is misspelled.",
           "401": "The API key sent is invalid.",
