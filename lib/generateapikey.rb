@@ -1,3 +1,4 @@
+# generates a new api key for user
 class GenerateApiKey
   require 'securerandom'
   require './lib/sendapikeyemail.rb'
@@ -7,19 +8,20 @@ class GenerateApiKey
   end
 
   def generate_key
-    @api_key = "api_v1_#{SecureRandom.urlsafe_base64}"
-    @rpd = 50 #request per day: set 50 as default for now
-    @apikey = Apikey.new(
-      api_key: @api_key,
+    @generated_key = "api_v1_#{SecureRandom.urlsafe_base64}"
+    @rpd = 50 # request per day: set 50 as default for now
+    @api_key = Apikey.new(
+      api_key: @generated_key,
       api_rpd: @rpd,
       email: @email
     )
-    api_key = @api_key
+    api_key = @generated_key
     email = @email
-    if @apikey.save
-      @send_email = SendApiKeyEmail.new(email, api_key).send_email()
-      return { status: 200, message: "Please check your email for your new API key" }
+    if @api_key.save
+      SendApiKeyEmail.new(email, api_key).send_email
+      return { status: 200, message: 'Please check your email for your new API key' }
+    else
+      # error
     end
   end
-
 end

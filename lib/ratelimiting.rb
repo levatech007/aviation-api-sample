@@ -1,6 +1,7 @@
+# sets and checks for rate limit for individual API keys in DB
 class RateLimiting
   require 'redis'
-  TIME_WINDOW = 15 * 60 #for testing purposes, time window is 15 min
+  TIME_WINDOW = 15 * 60 # for testing purposes, time window is 15 min
   MAX_REQUESTS = 10
 
   def rate_limit_not_exceeded?(api_key)
@@ -13,11 +14,9 @@ class RateLimiting
       redis.expire(key, TIME_WINDOW)
     end
 
-    if count.to_i >= MAX_REQUESTS
-      return false
-    end
+    return false if count.to_i >= MAX_REQUESTS
 
     redis.incr(key)
     true
-   end
+  end
 end

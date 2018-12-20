@@ -1,3 +1,4 @@
+# sends newly generated API key to user provided email
 class SendApiKeyEmail
   require 'mail'
 
@@ -7,16 +8,16 @@ class SendApiKeyEmail
   end
 
   def send_email
-    to_email = @email #Mail.new does not recognize instance variables like @email, needs a better workaround
+    to_email = @email # Mail.new does not recognize instance variables
     html_template = ERB.new(File.read('views/api_key_email.html.erb')).result(binding)
-    #text_template = ERB.new(File.read('views/api_key_email.text.erb')).result(binding)
+    # text_template = ERB.new(File.read('views/api_key_email.text.erb')).result(binding)
     mail = Mail.new do
       from ENV['GMAIL_USERNAME']
       to to_email
-      subject "Your API key"
+      subject 'Your API key'
     end
     text_part = Mail::Part.new do
-      body "Your API key is: #{ @api_key }"
+      body "Your API key is: #{@api_key}"
     end
     html_part = Mail::Part.new do
       content_type 'text/html; charset=UTF-8'
@@ -27,5 +28,4 @@ class SendApiKeyEmail
     mail.html_part = html_part
     mail.deliver
   end
-
 end
