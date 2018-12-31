@@ -1,6 +1,8 @@
 # request needed tokens for 3rd party API calls
 class GetToken
   require 'rest-client'
+  # plugin :halt
+  LH_TOKEN_URL = 'https://api.lufthansa.com/v1/oauth/token'
 
   def obtain_lh_token
     # Lufthansa API
@@ -16,5 +18,5 @@ class GetToken
       headers: { content_type: 'application/x-www-form-urlencoded' }
     )
     JSON.parse(response)
-  end
+    end
 end

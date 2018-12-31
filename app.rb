@@ -10,6 +10,7 @@ class App < Roda
   plugin :multi_route
   plugin :json
   plugin :halt
+  require './lib/errormessages.rb'
 
   Unreloader.require('routes'){}
 

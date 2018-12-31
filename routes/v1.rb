@@ -20,23 +20,24 @@ class App
                 url: url,
                 headers: { Authorization: auth, Accept: 'application/json' }
                 ) { |response|
+                  # errors are not DRY, need better solution. Maybe separate class?
                   case response.code
                   when 200
                     response
                   when 400
-                    r.halt(400, { status: 400, error: 'Bad request', message: 'Please check your parameters' })
+                    r.halt(400, { error: 'Bad request', message: ErrorMessages::CHECK_SPELLING })
                   else
-                    r.halt(400, { status: 400, error: 'Bad request', message: 'Something went wrong' })
+                    r.halt(400, { error: 'Bad request', message: ErrorMessages::GENERAL_ERROR })
                   end
                 }
             else
-              r.halt(429, { status: 429, error: 'Too many requests', message: 'You have exceeded your daily request limit' })
+              r.halt(429, { error: 'Too many requests', message: ErrorMessages::LIMIT_EXCEEDED })
             end
           else
-            r.halt(401, { status: 401, error: 'Unauthorized', message: 'Api key is invalid' })
+            r.halt(401, { error: 'Unauthorized', message: ErrorMessages::API_KEY_INVALID })
           end
         else
-          r.halt(400, { status: 400, error: 'Bad request', message: 'No api key present' })
+          r.halt(400, { error: 'Bad request', message: ErrorMessages::QUERY_INVALID })
         end
       end
     end
