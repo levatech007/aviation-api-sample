@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
 gem 'mail'
-gem 'rack_csrf'
 gem 'rack-unreloader'
+gem 'rack_csrf'
 gem 'rake' # Heroku won't run rake tasks without the gem
 gem 'redis'
 gem 'rest-client'

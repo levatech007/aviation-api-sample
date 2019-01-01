@@ -2,7 +2,7 @@
 class GetToken
   require 'rest-client'
   # plugin :halt
-  LH_TOKEN_URL = 'https://api.lufthansa.com/v1/oauth/token'
+  LH_TOKEN_URL = 'https://api.lufthansa.com/v1/oauth/token'.freeze
 
   def obtain_lh_token
     # Lufthansa API
@@ -18,5 +18,5 @@ class GetToken
       headers: { content_type: 'application/x-www-form-urlencoded' }
     )
     JSON.parse(response)
-    end
+  end
 end
