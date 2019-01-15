@@ -1,5 +1,5 @@
 # Aviation API
-Rack based API to use with Volo app.  
+Rack based API (in the future part of Volo app).  
 
 ## Technologies:
 - Rack
