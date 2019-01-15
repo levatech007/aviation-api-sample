@@ -13,6 +13,7 @@ Rack based API to use with Volo app.
 - Request an api key (requires a valid email)
 - Generate and save api key  
 - Email new api key to client
+- Rate limit: currently set at 10 requests per 15 minutes
 
 ## Third Party APIs Used:
 - [Lufthansa API (OAuth)](https://developer.lufthansa.com)
