@@ -10,10 +10,11 @@ Rack based API (in the future part of Volo app).
 - RestClient
 
 ## Current Features:
-- Request an api key (requires a valid email)
-- Generate and save api key  
-- Email new api key to client
+- Lets a client request an api key (requires a valid email)
+- Generates and saves new api key  
+- Emails new api key to client
 - Rate limit: currently set at 10 requests per 15 minutes
+- Version control (URL)
 
 ## Third Party APIs Used:
 - [Lufthansa API (OAuth)](https://developer.lufthansa.com)
@@ -26,3 +27,4 @@ Rack based API (in the future part of Volo app).
 ## Future Features:
 
 - Rate Limit (requests per day) - simple version working
+- Incorporate more 3rd party APIs to get better flight schedule data
