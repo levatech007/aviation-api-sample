@@ -5,38 +5,15 @@ class App
     r.on 'welcome' do
       r.get 'flights' do
         api_key = r.params['api_key']
+        p( r.params)
         if api_key
           if ValidateApiKey.new(api_key).api_key_valid?
             if RateLimiting.new.rate_limit_not_exceeded?(api_key)
-              lh_token = GetToken.new.obtain_lh_token
-              # API call needs to be separated into its own class
-              # Auth format to send: "Bearer kfu894usdbj"
-              auth = "#{lh_token['token_type'].capitalize} #{lh_token['access_token']}"
-              # hardcoded url params for now
-              url = 'https://api.lufthansa.com/v1/operations/schedules/FRA/SFO/2019-02-24?directFlights=1'
-              RestClient::Request.execute(
-                method: :get,
-                url: url,
-                headers: { Authorization: auth, Accept: 'application/json' }
-              ) { |response|
-                  # errors are not DRY, need better solution. Maybe separate class?
-                  case response.code
-                  when 200
-                    response
-                  when 400
-                    r.halt(
-                      400,
-                      error: 'Bad request',
-                      message: ErrorMessages::CHECK_SPELLING
-                    )
-                  else
-                    r.halt(
-                      400,
-                      error: 'Bad request',
-                      message: ErrorMessages::GENERAL_ERROR
-                    )
-                  end
-              }
+              #validate request params
+              #if LufthansaApiCalls.new(r.params).get_request_params_valid?
+              response = LufthansaApiCalls.new(r.params).get_flights
+              JSON.parse(response)
+              #add error handling
             else
               r.halt(
                 429,

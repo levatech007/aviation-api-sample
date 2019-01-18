@@ -14,7 +14,7 @@ class RateLimiting
       redis.expire(key, TIME_WINDOW)
     end
 
-    return false if count.to_i >= MAX_REQUESTS
+    return false if count.to_i > MAX_REQUESTS
 
     redis.incr(key)
     true
