@@ -5,14 +5,12 @@ class App
     r.on 'welcome' do
       r.get 'flights' do
         api_key = r.params['api_key']
-        p( r.params)
-        if api_key
+        if api_key # validate other params
           if ValidateApiKey.new(api_key).api_key_valid?
             if RateLimiting.new.rate_limit_not_exceeded?(api_key)
               #validate request params
-              #if LufthansaApiCalls.new(r.params).get_request_params_valid?
-              response = LufthansaApiCalls.new(r.params).get_flights
-              JSON.parse(response)
+              valid_params = LufthansaApiCalls.new(r.params).request_params_valid?
+              #response = LufthansaApiCalls.new(r.params).get_flights
               #add error handling
             else
               r.halt(

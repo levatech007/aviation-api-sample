@@ -13,7 +13,7 @@ class GetToken
     }
     response = RestClient::Request.execute(
       method: :post,
-      url: 'https://api.lufthansa.com/v1/oauth/token',
+      url: LH_TOKEN_URL,
       payload: data,
       headers: { content_type: 'application/x-www-form-urlencoded' }
     )

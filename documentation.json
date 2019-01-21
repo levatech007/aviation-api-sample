@@ -8,7 +8,7 @@
       "params": {
         "email": "Your valid email"
       },
-      "info": "Generates a new API key and emails the new key to the email included with the request. For testing, the rate limit is set to 10 requests per 15 minutes.",
+      "info": "Generates a new API key and sends the new key to the email included with the request. For testing, the rate limit is set to 10 requests per 15 minutes.",
       "errors": {
         "400": "Email is not present or email is invalid."
       }
@@ -19,7 +19,8 @@
           "api_key": "Your valid api key",
           "departing_from": "IATA code for departure airport",
           "arriving_to": "IATA code for destination airport",
-          "date": "Format 'YYYY-MM-DD'"
+          "date": "Format 'YYYY-MM-DD'",
+          "direct_flights": "Direct flights only: 1, else 0"
         },
         "info": "Currently shows Lufthansa and other Star Alliance flights",
         "errors": {
