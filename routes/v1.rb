@@ -5,7 +5,8 @@ class App
     r.on 'welcome' do
       r.get 'flights' do
         api_key = r.params['api_key']
-        if api_key # validate other params
+        # check that params are present
+        if api_key #!= "" => check that there is an api key included
           if ValidateApiKey.new(api_key).api_key_valid?
             if RateLimiting.new.rate_limit_not_exceeded?(api_key)
               #validate request params

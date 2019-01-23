@@ -29,11 +29,8 @@ class LufthansaApiCalls
     return { error: "Airport code invalid" } if @departing_from.length != 3 || @arriving_to.length != 3
     return { error: "Direct flights not selected" } if @direct_flights != 1 || @direct_flights != 0
 
-    return {message: "Params are valid"}
-    #is present? validate airport codes (3 characters, convert to upper case?) => "{ param included }Airport code is invalid"
-    #is present? default to 1? validate direct_flights (0 or 1 only)
 
-    #return true if all are valid
+    return true #if all are valid
   end
 
   def get_flights

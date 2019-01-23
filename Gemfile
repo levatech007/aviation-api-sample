@@ -7,7 +7,7 @@ gem 'rake' # Heroku won't run rake tasks without the gem
 gem 'redis'
 gem 'rest-client'
 gem 'roda', '>= 3'
-gem 'sequel', '>= 5'
+gem 'sequel'
 gem 'sequel_pg'
 
 gem 'capybara'
