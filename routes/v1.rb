@@ -10,15 +10,19 @@ class App
           if RateLimiting.new.rate_limit_not_exceeded?(api_key)
             # begin routes
             r.get 'flights' do
-              LufthansaApiCalls.new(r.params).request_params_valid? # => if true, run LH api call
-                #LufthansaApiCalls.new(r.params).get_flights
-
+            
+              if LufthansaApiCalls.new(r.params).request_params_valid?
+                LufthansaApiCalls.new(r.params).get_flights
+              else
+                r.halt(400, message: "Please check your params")
+              end
             end
 
             r.get 'destinations' do
               p("I selected #{ r.params['airport'] }")
               #get all selected airport destinations
               Airports.new(r.params['airport']).get_airport_destinations
+
             end
 
           else

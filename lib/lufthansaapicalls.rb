@@ -1,11 +1,11 @@
 # calls to Lufthansa (LH) API
-class LufthansaApiCalls
+class LufthansaApiCalls < Roda
   require 'date'
   require 'rest-client'
   require './lib/gettoken.rb'
 
   LH_BASE_URL = 'https://api.lufthansa.com/v1/operations/schedules/'
-    #url = 'https://api.lufthansa.com/v1/operations/schedules/FRA/SFO/2019-02-24?directFlights=1'
+  #url = 'https://api.lufthansa.com/v1/operations/schedules/FRA/SFO/2019-02-24?directFlights=1'
   def initialize(request_params)
     @departing_from = request_params['departing_from']
     @arriving_to = request_params['arriving_to']
@@ -14,20 +14,24 @@ class LufthansaApiCalls
   end
 
   def request_params_valid?
-    # validate date format
+    # validate date format (for LH, YYYY-MM-DD)
     if @date.length == 10
       begin
-        conv_date = Date.strptime(@date, '%Y-%m-%d')
+        converted_date = Date.strptime(@date, '%Y-%m-%d')
       rescue ArgumentError => e
-        return { error: "Date is not valid" }
+        return false
+        # {message: "Date is not valid"}
       end
-      return { error: "Date is in the past" } if conv_date < Date.today
+      if converted_date < Date.today
+        return false
+        # { message: "Date is in the past" }
+      end
     else
-      return { error: "Date not valid. Format: YYYY-MM-DD" }
+      return false # { error: "Date not valid. Format: YYYY-MM-DD" }
     end
-    # better error handling needed; currently just returns message with 200/ok 
-    return { error: "Airport code invalid" } if @departing_from.length != 3 || @arriving_to.length != 3
-    return { error: "Direct flights not selected" } if @direct_flights != 1 || @direct_flights != 0
+    # better error handling needed; currently just returns message with 200/ok
+    return false if @departing_from.length != 3 || @arriving_to.length != 3 # { error: "Airport code invalid" } => move to airportsdata.rb
+    #return false if @direct_flights != 1 || @direct_flights != 0 # { error: "Direct flights option not selected" }
 
 
     return true #if all are valid
