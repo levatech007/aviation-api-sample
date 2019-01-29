@@ -1,6 +1,7 @@
 require_relative 'models'
 
 require 'roda'
+require 'sequel'
 
 class App < Roda
   # Don't delete session secret from environment in development mode as it breaks reloading

@@ -25,7 +25,7 @@ class LufthansaApiCalls
     else
       return { error: "Date not valid. Format: YYYY-MM-DD" }
     end
-
+    # better error handling needed; currently just returns message with 200/ok 
     return { error: "Airport code invalid" } if @departing_from.length != 3 || @arriving_to.length != 3
     return { error: "Direct flights not selected" } if @direct_flights != 1 || @direct_flights != 0
 
