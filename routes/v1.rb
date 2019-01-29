@@ -15,7 +15,7 @@ class App
 
             end
 
-            r.get 'airports' do
+            r.get 'destinations' do
               p("I selected #{ r.params['airport'] }")
               #get all selected airport destinations
               Airports.new(r.params['airport']).get_airport_destinations
