@@ -2,18 +2,18 @@
   "Intro": "Welcome to Aviation API. This application is currently under development. Please see below for available test routes.",
   "Base URL for this api": "https://aviation-api.herokuapp.com/",
   "Current routes":
-  {
-    "POST": {
-      "route": "/api/apikey/generate",
-      "required params": {
-        "email": "Your valid email"
+    {
+      "POST": {
+        "route": "/api/apikey/generate",
+        "required params": {
+          "email": "Your valid email"
+        },
+        "info": "Generates a new API key and sends the new key to the email included with the request. For testing, the rate limit is set to 10 requests per 15 minutes.",
+        "errors": {
+          "400": "Email is not present or email is invalid."
+        }
       },
-      "info": "Generates a new API key and sends the new key to the email included with the request. For testing, the rate limit is set to 10 requests per 15 minutes.",
-      "errors": {
-        "400": "Email is not present or email is invalid."
-      }
-    },
-      "GET": {
+      "GET /flights": {
         "route": "/api/v1/welcome/flights",
         "required params": {
           "api_key": "Your valid api key",
@@ -28,17 +28,18 @@
           "401": "The API key sent is invalid.",
           "429": "You have exceeded the rate limit."
         }
-      }
-    },
-    "GET": {
-      "route": "/api/v1/welcome/destinations",
-      "required params": {
-        "api_key": "Your valid api key",
-        "airport": "Airport IATA code (3 characters, e.g. 'SFO' => San Francisco International Airport). Currently available for request: SFO, LAX and SXM."
       },
-      "info": "Returns a list of destinations with non-stop flights to target airport. Data returned does not include seasonal flights at the moment.",
-      "errors": {
-        "TBD": "",
+      "GET /airports": {
+        "route": "/api/v1/welcome/destinations",
+        "required params": {
+          "api_key": "Your valid api key",
+          "airport": "Airport IATA code (3 characters, e.g. 'SFO' => San Francisco International Airport). Currently available for request: SFO, LAX and SXM."
+        },
+        "info": "Returns a list of destinations with non-stop flights to target airport. Data returned does not include seasonal flights at the moment.",
+        "errors": {
+          "TBD": ""
+        }
       },
-    "Error format": "{ status: 4XX, error: 'General error name', message: 'Descriptive error message' }"
+    "Error format": "{ status: 4XX, error: 'General error name', message: 'Descriptive error message'}"
+    }
   }

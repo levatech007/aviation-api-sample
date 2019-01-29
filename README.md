@@ -15,9 +15,12 @@ Rack based API (in the future part of Volo app).
 - Emails new api key to client
 - Rate limit: currently set at 10 requests per 15 minutes
 - Version control (URL)
+- Request flight schedules between two airports for a given date
+- Request target airport's non-stop routes
 
 ## Third Party APIs Used:
 - [Lufthansa API (OAuth)](https://developer.lufthansa.com)
+- Google Apps Scripts to scrape Wikipedia pages for airport data (link coming soon)
 
 ## Other VOLO apps:
 
@@ -28,3 +31,4 @@ Rack based API (in the future part of Volo app).
 
 - Rate Limit (requests per day) - simple version working
 - Incorporate more 3rd party APIs to get better flight schedule data
+- Destinations are available only for 3 airports at the moment (SFO, LAX, SXM)
