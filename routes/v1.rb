@@ -3,16 +3,17 @@ class App
 
   route 'v1' do |r|
     r.on 'welcome' do
+      # check that there is a (valid) api key, rate limit hasn't been exceeded
       api_key = r.params['api_key']
-      if api_key != "" # check that there is an api key included
+      if api_key != ""
         if ValidateApiKey.new(api_key).api_key_valid?
           if RateLimiting.new.rate_limit_not_exceeded?(api_key)
-      # move api key check + rate limit here
+            # begin routes
             r.get 'flights' do
               #validate request params
-              valid_params = LufthansaApiCalls.new(r.params).request_params_valid?
-              #response = LufthansaApiCalls.new(r.params).get_flights
-              #add error handling
+              LufthansaApiCalls.new(r.params).request_params_valid?
+                #LufthansaApiCalls.new(r.params).get_flights
+
             end
 
             r.get 'airport' do

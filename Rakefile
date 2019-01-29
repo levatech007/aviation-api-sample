@@ -46,6 +46,13 @@ task :prod_up do
   migrate.call('production', nil)
 end
 
+# create task to run seed files:
+# desc 'Run database seed files'
+# task :seed_db do
+#   File.read('seeds/seed.rb')
+# end
+
+
 # Shell
 
 irb = proc do |env|

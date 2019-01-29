@@ -43,7 +43,7 @@ class LufthansaApiCalls
       url: url,
       headers: { Authorization: auth, Accept: 'application/json' }
     ) { |response|
-      response.code == 200 ? JSON.parse(response) : {error: "Something went wrong"} # +needs to return error code
+      response.code == 200 ? JSON.parse(response) : {error: "Something went wrong with LH"} # +needs to return error code
     }
 
   end
