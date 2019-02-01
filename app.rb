@@ -12,6 +12,9 @@ class App < Roda
   plugin :halt
   # require all files from  /lib directory
   Dir['./lib/*.rb'].each {|file| require file }
+  # require documentation
+  file = File.read('documentation.json')
+  documentation = JSON.parse(file)
 
   Unreloader.require('routes') {}
 
@@ -21,8 +24,8 @@ class App < Roda
     end
 
     r.root do
-      file = File.read('documentation.json')
-      JSON.parse(file)
+      documentation
     end
+
   end
 end
