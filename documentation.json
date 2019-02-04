@@ -1,45 +1,49 @@
   {
-  "Intro": "Welcome to Aviation API. This application is currently under development. Please see below for available test routes.",
-  "Base URL for this api": "https://aviation-api.herokuapp.com/",
-  "Current routes":
-    {
-      "POST": {
-        "route": "/api/apikey/generate",
-        "required params": {
-          "email": "Your valid email"
-        },
-        "info": "Generates a new API key and sends the new key to the email included with the request. For testing, the rate limit is set to 10 requests per 15 minutes.",
-        "errors": {
-          "400": "Email is not present or email is invalid."
-        }
-      },
-      "GET /flights": {
-        "route": "/api/v1/welcome/flights",
-        "required params": {
-          "api_key": "Your valid api key",
-          "departing_from": "IATA code for departure airport",
-          "arriving_to": "IATA code for destination airport",
-          "date": "Format 'YYYY-MM-DD'",
-          "direct_flights": "Direct flights only: 1, else 0"
-        },
-        "info": "Currently shows Lufthansa and other Star Alliance flights",
-        "errors": {
-          "400": "API key is missing or api_key is misspelled.",
-          "401": "The API key sent is invalid.",
-          "429": "You have exceeded the rate limit."
-        }
-      },
-      "GET /airports": {
-        "route": "/api/v1/welcome/destinations",
-        "required params": {
-          "api_key": "Your valid api key",
-          "airport": "Airport IATA code (3 characters, e.g. 'SFO' => San Francisco International Airport). Currently available for request: SFO, LAX and SXM."
-        },
-        "info": "Returns a list of destinations with non-stop flights to target airport. Data returned does not include seasonal flights at the moment.",
-        "errors": {
-          "TBD": ""
-        }
-      },
-    "Error format": "{ status: 4XX, error: 'General error name', message: 'Descriptive error message'}"
-    }
+  "intro": "Welcome to VOLO aviation API, a JSON-based REST API. This application is currently under development. Please see below for available test endpoints.",
+  "base_URL": "https://aviation-api.herokuapp.com/",
+  "current_routes": [
+                      {
+                        "route_description": "Sign up for an API key",
+                        "request_type": "POST",
+                        "route_url": "/api/apikey/generate",
+                        "required_params": [
+                                            { "param": "email", "type": "string", "message": "Your valid email" }
+                                           ],
+                        "notes": "Generates a new API key and sends the new key to the email included with the request. For testing, the rate limit is set to 10 requests per 15 minutes.",
+                        "errors": [
+                                    { "status_code": "400", "error_message":"Email is not present or email is invalid." }
+                                  ]
+                      },
+                      {
+                          "route_description": "Get flights between two airports",
+                          "request_type": "GET",
+                          "route_url": "/api/v1/welcome/flights",
+                          "required_params": [
+                                              { "param": "api_key", "type": "string", "message": "Your valid api key" },
+                                              { "param": "departing_from", "type": "string", "message": "IATA code for departure airport" },
+                                              { "param":"arriving_to", "type": "string", "message": "IATA code for destination airport" },
+                                              { "param": "date", "type": "string", "message": "Please format the date as YYYY-MM-DD" },
+                                              { "param": "direct_flights", "type": "integer", "message": "To get only direct flights, send 1, else 0" }
+                                            ],
+                          "notes": "Currently shows only Lufthansa and other Star Alliance flights",
+                          "errors": [
+                                      { "status_code": "400", "error_message": "API key is missing or api_key is misspelled." },
+                                      { "status_code": "401", "error_message": "The API key sent is invalid." },
+                                      { "status_code": "429", "error_message": "You have exceeded the rate limit." }
+                                    ]
+                      },
+                      {
+                        "route_description":"Get airport nonstop destinations",
+                        "request_type": "GET",
+                        "route_url": "/api/v1/welcome/destinations",
+                        "required_params": [
+                                            { "param": "api_key", "type": "string", "message": "Your valid api key" },
+                                            { "param": "airport", "type": "string", "message": "Airport IATA code (3 characters, e.g. 'SFO' => San Francisco International Airport)." }
+                                           ],
+                        "notes": "Returns a list of destinations with non-stop flights to target airport. Data returned does not include seasonal flights at the moment. Currently available for request: SFO, LAX and SXM.",
+                        "errors": [
+                                    { "status_code": "TBD", "error_message": "TBD" }
+                                  ]
+                      }
+                    ]
   }
