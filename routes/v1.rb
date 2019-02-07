@@ -10,12 +10,8 @@ class App
           if RateLimiting.new.rate_limit_not_exceeded?(api_key)
             # begin routes
             r.get 'flights' do
-            
-              if LufthansaApiCalls.new(r.params).request_params_valid?
-                LufthansaApiCalls.new(r.params).get_flights
-              else
-                r.halt(400, message: "Please check your params")
-              end
+              request = LufthansaApiCalls.new(r.params).validate_request_params
+              request[:error] ? r.halt(400, errors: request[:messages]) : LufthansaApiCalls.new(r.params).get_flights
             end
 
             r.get 'destinations' do

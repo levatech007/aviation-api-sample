@@ -4,8 +4,9 @@ class Airports
     @airport_iata_code = airport_iata_code
   end
 
-  def validate_airport
-    # validate airport code 
+  def valid_iata_airport_code?
+    return true if Airport.find(airport_iata_code: @airport_iata_code)
+    false
   end
 
   def get_airport_destinations
