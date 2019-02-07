@@ -5,6 +5,7 @@ end
 
 require 'sequel/core'
 require 'rest-client'
+require 'json'
 # Delete APP_DATABASE_URL from the environment, so it isn't accidently
 # passed to subprocesses.  APP_DATABASE_URL may contain passwords.
 DB = Sequel.connect(ENV.delete('APP_DATABASE_URL') || ENV.delete('DATABASE_URL'))
@@ -14,16 +15,28 @@ DB = Sequel.connect(ENV.delete('APP_DATABASE_URL') || ENV.delete('DATABASE_URL')
 # get seed file from /seeds/seed.rb
 # clear DB entries before running the seeds or check if entries already exist.
 
+
+# SEED AIRPORT DATABASE BELOW (WORKING SOLUTION):
 # airports = DB[:airports]
 # airports.delete # CAREFUL! DELETES ALL PREVIOUS ENTRIES
-# airports_list = [
-#   ["San Francisco International", "SFO", "KSFO", 37.615215, -122.38988, "America/Los_Angeles", -8, "United States", "US", "SFO"],
-#   ["Princess Juliana International", "SXM", "TNCM", 18.044722, -63.11406, "America/Lower_Princes", -4, "Sint Maarten", "SX", "SXM"],
-#   ["Los Angeles International", "LAX", "KLAX", 33.943398, -118.40828, "America/Los_Angeles", -8, "United States", "US", "LAX"]
-#  ]
-#    airports_list.each do |airport|
-#      airports.insert(airport_name: airport[0], airport_iata_code: airport[1], airport_icao_code: airport[2], latitude: airport[3], longitude: airport[4], timezone: airport[5], gmt: airport[6], country_name: airport[7], iso2_country_code: airport[8], iata_city_code: airport[9])
-#    end
+# file = File.read('seeds/formatted_airports_data.json')
+# data = JSON.parse(file)
+# airport_list = data['airports']
+# airport_list.map do |airport|
+#     airport_json = JSON.parse(airport)
+#     airports.insert(
+#                       airport_name:       airport_json['airport_name'],
+#                       airport_iata_code:  airport_json['airport_iata_code'],
+#                       airport_icao_code:  airport_json['airport_icao_code'],
+#                       latitude:           airport_json['latitude'],
+#                       longitude:          airport_json['longitude'],
+#                       timezone:           airport_json['timezone'],
+#                       gmt:                airport_json['gmt'],
+#                       country_name:       airport_json['country_name'],
+#                       iso2_country_code:  airport_json['iso2_country_code'],
+#                       iata_city_code:     airport_json['iata_city_code']
+#                     )
+#   end
 
 
 # adds destinations to each airport:
