@@ -3,7 +3,7 @@ class App
 
   route 'v1' do |r|
     r.on 'welcome' do
-      # check that there is a (valid) api key and rate limit hasn't been exceeded
+      # check that there is a (valid) api key and rate limit hasn't been exceeded before proceeding to routes
       api_key = r.params['api_key']
       if api_key != ""
         if ValidateApiKey.new(api_key).api_key_valid?
@@ -15,10 +15,8 @@ class App
             end
 
             r.get 'destinations' do
-              p("I selected #{ r.params['airport'] }")
               #get all selected airport destinations
               Airports.new(r.params['airport']).get_airport_destinations
-
             end
 
           else

@@ -27,9 +27,7 @@
                                             ],
                           "notes": "Currently shows only Lufthansa and other Star Alliance flights",
                           "errors": [
-                                      { "status_code": "400", "error_message": "API key is missing or api_key is misspelled." },
-                                      { "status_code": "401", "error_message": "The API key sent is invalid." },
-                                      { "status_code": "429", "error_message": "You have exceeded the rate limit." }
+                                      { "status_code": "400", "error_messages": "Return an array of descriptive messages" }
                                     ]
                       },
                       {
