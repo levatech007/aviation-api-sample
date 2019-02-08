@@ -12,9 +12,9 @@ class Airports
   def get_airport_destinations
     @destinations = Airport.where(airport_iata_code: @airport_iata_code).get(:destinations)
     result = {
-      airport: @airport_iata_code,
-      destinations: @destinations.split(",").sort
-    }
+                airport:      @airport_iata_code,
+                destinations: @destinations.split(",").sort
+              }
 
   end
 

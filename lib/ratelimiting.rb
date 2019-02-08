@@ -6,7 +6,7 @@ class RateLimiting
 
   def rate_limit_not_exceeded?(api_key)
     redis = Redis.new
-    key = "count:#{api_key}"
+    key   = "count:#{api_key}"
     count = redis.get(key)
 
     unless count

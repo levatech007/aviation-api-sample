@@ -9,14 +9,14 @@ class GenerateApiKey
 
   def generate_key
     @generated_key = "api_v1_#{SecureRandom.urlsafe_base64}"
-    @rpd = 50 # request per day: set 50 as default for now
+    @rpd = 50 # request per day: functionality not working yet
     @api_key = Apikey.new(
-      api_key: @generated_key,
-      api_rpd: @rpd,
-      email: @email
-    )
+                            api_key: @generated_key,
+                            api_rpd: @rpd,
+                            email:   @email
+                          )
     api_key = @generated_key
-    email = @email
+    email   = @email
     if @api_key.save
       SendApiKeyEmail.new(email, api_key).send_email
       return { message: 'Please check your email for your new API key' }

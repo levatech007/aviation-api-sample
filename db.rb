@@ -12,7 +12,6 @@ DB = Sequel.connect(ENV.delete('APP_DATABASE_URL') || ENV.delete('DATABASE_URL')
 
 # initial fix for seeding DB. Comment out the following variables, arrays and functions after items entered into DB after running $ rackup
 # run when there are changes to seed data
-# get seed file from /seeds/seed.rb
 # clear DB entries before running the seeds or check if entries already exist.
 
 # SEED DATABASES BELOW (NOT IDEAL BUT A WORKING SOLUTION FOR NOW):
