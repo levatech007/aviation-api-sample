@@ -16,7 +16,7 @@ DB = Sequel.connect(ENV.delete('APP_DATABASE_URL') || ENV.delete('DATABASE_URL')
 # clear DB entries before running the seeds or check if entries already exist.
 
 
-# SEED AIRPORT DATABASE BELOW (WORKING SOLUTION):
+# SEED AIRPORT DATABASES BELOW (NOT IDEAL BUT A WORKING SOLUTION FOR NOW):
 # airports = DB[:airports]
 # airports.delete # CAREFUL! DELETES ALL PREVIOUS ENTRIES
 # file = File.read('seeds/formatted_airports_data.json')
@@ -38,7 +38,28 @@ DB = Sequel.connect(ENV.delete('APP_DATABASE_URL') || ENV.delete('DATABASE_URL')
 #                     )
 #   end
 
+# aircrafts = DB[:aircrafts]
+# aircrafts.delete # CAREFUL! DELETES ALL PREVIOUS ENTRIES
+# file = File.read('seeds/formatted_aircrafts_data.json')
+# data = JSON.parse(file)
+# airport_list = data['aircrafts']
+# airport_list.map do |aircraft|
+#     aircraft_json = JSON.parse(aircraft)
+#     aircrafts.insert(
+#                       iata_aircraft_code:  aircraft_json['iata_aircraft_code'],
+#                       icao_aircraft_code:  aircraft_json['icao_aircraft_code'],
+#                       aircraft_name:       aircraft_json['aircraft_name'],
+#                       wake_category:       aircraft_json['wake_category']
+#                     )
+#   end
 
+
+
+
+
+
+
+#OUTDATED BELOW, NEEDS UPDATING to match seed database formatting
 # adds destinations to each airport:
 # airports = DB[:airports]
 # response = RestClient.get(ENV['APPS_SCRIPT_URL'])
