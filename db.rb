@@ -15,8 +15,9 @@ DB = Sequel.connect(ENV.delete('APP_DATABASE_URL') || ENV.delete('DATABASE_URL')
 # get seed file from /seeds/seed.rb
 # clear DB entries before running the seeds or check if entries already exist.
 
+# SEED DATABASES BELOW (NOT IDEAL BUT A WORKING SOLUTION FOR NOW):
 
-# SEED AIRPORT DATABASES BELOW (NOT IDEAL BUT A WORKING SOLUTION FOR NOW):
+# => SEED AIRPORT DATA
 # airports = DB[:airports]
 # airports.delete # CAREFUL! DELETES ALL PREVIOUS ENTRIES
 # file = File.read('seeds/formatted_airports_data.json')
@@ -38,6 +39,7 @@ DB = Sequel.connect(ENV.delete('APP_DATABASE_URL') || ENV.delete('DATABASE_URL')
 #                     )
 #   end
 
+# => SEED AIRCRAFT DATA
 # aircrafts = DB[:aircrafts]
 # aircrafts.delete # CAREFUL! DELETES ALL PREVIOUS ENTRIES
 # file = File.read('seeds/formatted_aircrafts_data.json')
@@ -50,6 +52,25 @@ DB = Sequel.connect(ENV.delete('APP_DATABASE_URL') || ENV.delete('DATABASE_URL')
 #                       icao_aircraft_code:  aircraft_json['icao_aircraft_code'],
 #                       aircraft_name:       aircraft_json['aircraft_name'],
 #                       wake_category:       aircraft_json['wake_category']
+#                     )
+#   end
+
+# => SEED AIRLINES DATA:
+# airlines = DB[:airlines]
+# airlines.delete # CAREFUL! DELETES ALL PREVIOUS ENTRIES
+# file = File.read('seeds/formatted_airlines_data.json')
+# data = JSON.parse(file)
+# airlines_list = data['airlines']
+# airlines_list.map do |airline|
+#     airline_json = JSON.parse(airline)
+#     airlines.insert(
+#                       airline_iata_code:  airline_json['airline_iata_code'],
+#                       airline_icao_code:  airline_json['airline_icao_code'],
+#                       airline_name:       airline_json['airline_name'],
+#                       callsign:           airline_json['callsign'],
+#                       iata_hub_code:      airline_json['iata_hub_code'],
+#                       country_name:       airline_json['country_name'],
+#                       iso2_country_code:  airline_json['iso2_country_code']
 #                     )
 #   end
 
