@@ -92,7 +92,7 @@ class LufthansaApiCalls
     {
        route:             "FRA => MUC => SFO", # template string of all airports
        stops:             journey_stops,
-       #journey_duration:  convert_journey_duration(flights['TotalJourney']['Duration']),
+       journey_duration:  journey['TotalJourney']['Duration'].gsub(/[PT]/, ""),
        flights:           journey_flights
     }
 
@@ -113,12 +113,6 @@ class LufthansaApiCalls
         arrival_time_local:     flight['Arrival']['ScheduledTimeLocal']['DateTime'],
         aircraft_type:          Aircraft.where(iata_aircraft_code: flight['Equipment']['AircraftCode'].to_s).get(:aircraft_name)
     }
-  end
-
-  def convert_journey_duration(time)
-    # time => duration string from LH
-    # Format: P[n]nDT[n]nH[n]nM. Hours and minutes can be single digits.
-    # output string in hours and minutes => "17H15M"
   end
 
 end
