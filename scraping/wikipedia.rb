@@ -1,3 +1,4 @@
+# in the future, scrape all airport destinations from here
 require 'nokogiri'
 require 'rest-client'
 lax_url = "https://en.wikipedia.org/wiki/Los_Angeles_International_Airport"

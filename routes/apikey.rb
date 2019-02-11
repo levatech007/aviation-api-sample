@@ -10,19 +10,11 @@ class App
         r.post do
           to_email = r.params['email']
           if to_email && to_email.match(URI::MailTo::EMAIL_REGEXP).to_s != ''
-            GenerateApiKey.new(to_email).generate_key # generates api key and emails to user
+            GenerateApiKey.new(to_email).generate_key # generates api key and emails it to user
           elsif to_email
-            r.halt(
-              400,
-              error: 'Bad request',
-              message: ErrorMessages::EMAIL_INVALID
-            )
+            r.halt(400, message: ErrorMessages::EMAIL_INVALID)
           else
-            r.halt(
-              400,
-              error: 'Bad request',
-              message: ErrorMessages::EMAIL_NOT_PRESENT
-            )
+            r.halt(400, message: ErrorMessages::EMAIL_NOT_PRESENT)
           end
         end
       end

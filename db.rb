@@ -38,21 +38,12 @@ DB = Sequel.connect(ENV.delete('APP_DATABASE_URL') || ENV.delete('DATABASE_URL')
 #                     )
 #   end
 
-# => SEED AIRCRAFT DATA
+
+
+# => DELETE ALL AIRCRAFT DATA
 # aircrafts = DB[:aircrafts]
-# aircrafts.delete # CAREFUL! DELETES ALL PREVIOUS ENTRIES
-# file = File.read('seeds/formatted_aircrafts_data.json')
-# data = JSON.parse(file)
-# airport_list = data['aircrafts']
-# airport_list.map do |aircraft|
-#     aircraft_json = JSON.parse(aircraft)
-#     aircrafts.insert(
-#                       iata_aircraft_code:  aircraft_json['iata_aircraft_code'],
-#                       icao_aircraft_code:  aircraft_json['icao_aircraft_code'],
-#                       aircraft_name:       aircraft_json['aircraft_name'],
-#                       wake_category:       aircraft_json['wake_category']
-#                     )
-#   end
+# aircrafts.delete
+
 
 # => SEED AIRLINES DATA:
 # airlines = DB[:airlines]
@@ -72,12 +63,6 @@ DB = Sequel.connect(ENV.delete('APP_DATABASE_URL') || ENV.delete('DATABASE_URL')
 #                       iso2_country_code:  airline_json['iso2_country_code']
 #                     )
 #   end
-
-
-
-
-
-
 
 #OUTDATED BELOW, NEEDS UPDATING to match seed database formatting
 # adds destinations to each airport:

@@ -64,55 +64,55 @@ class LufthansaApiCalls
 
   end
 
-  # journey is the complete one-way trip
   def format_get_flights_data(flights_data)
-    p("flights_data:")
-    flight_options = []
-    flights_data.map { |journey|  flight_options.push(format_one_journey(journey))}
+    journey_options = []
+    flights_data.map { |journey|  journey_options.push(format_one_journey(journey))}
 
     result = {
-                "results_count": flights_data.length,
-                "flight_options": flight_options
+                results_count: flights_data.length,
+                journey_options: journey_options
               }
+    # handle errors
+    return result
   end
 
   def format_one_journey(journey)
-    p("One journey: #{journey}")
-    p(journey['Flight'])
-    # => journey is an object
+    # journey['Flight'] is an object if the entire journey is a single non-stop flight,
+    # otherwise it is an array of objects where each objects contains a single leg flight of the journey
     if journey['Flight'].kind_of?(Array)
-      journey_stops   = journey['Flight'].length - 1
-      journey_flights = []
+      journey_flights, journey_stops   = [], journey['Flight'].length - 1
       journey['Flight'].each { |flight| journey_flights.push(format_single_flight(flight))}
     else
-      journey_stops   = 0
-      journey_flights = format_single_flight(journey['Flight'])
+      journey_flights, journey_stops   = 0, format_single_flight(journey['Flight'])
     end
 
-    {
-       route:             "FRA => MUC => SFO", # template string of all airports
-       stops:             journey_stops,
-       journey_duration:  journey['TotalJourney']['Duration'].gsub(/[PT]/, ""),
-       flights:           journey_flights
-    }
-
+    one_formatted_journey = {
+                               #route:             "FRA to SFO via MUC", # template string of all airports
+                               stops:             journey_stops,
+                               journey_duration:  journey['TotalJourney']['Duration'].gsub(/[PT]/, ""),
+                               flights:           journey_flights
+                            }
+    # handle errors
+    return one_formatted_journey
   end
 
   def format_single_flight(flight)
-    # all flights have 'MarketingCarrier', direct LH flights ONLY have 'MarketingCarrier'
+    # all flights have 'MarketingCarrier' that is LH, LH own flights ONLY have 'MarketingCarrier'
     # if operated by airline other than LH, 'OperatingCarrier' is included and should be used
     carrier = flight.key?('OperatingCarrier') ?  'OperatingCarrier' : 'MarketingCarrier'
-    {
-        flight_number:          "#{flight[carrier]['AirlineID']}#{flight[carrier]['FlightNumber']}",
-        operated_by:            Airline.where(airline_iata_code: flight[carrier]['AirlineID']).get(:airline_name),
-        departure_airport:      flight['Departure']['AirportCode'],
-        departure_airport_name: Airport.where(airport_iata_code: flight['Departure']['AirportCode']).get(:airport_name),
-        departure_time_local:   flight['Departure']['ScheduledTimeLocal']['DateTime'],
-        arrival_airport:        flight['Arrival']['AirportCode'],
-        arrival_airport_name:   Airport.where(airport_iata_code: flight['Arrival']['AirportCode']).get(:airport_name),
-        arrival_time_local:     flight['Arrival']['ScheduledTimeLocal']['DateTime'],
-        aircraft_type:          Aircraft.where(iata_aircraft_code: flight['Equipment']['AircraftCode'].to_s).get(:aircraft_name)
-    }
+    one_formatted_flight = {
+                              flight_number:          "#{flight[carrier]['AirlineID']}#{flight[carrier]['FlightNumber']}",
+                              operated_by:            Airline.where(airline_iata_code: flight[carrier]['AirlineID']).get(:airline_name),
+                              departure_airport:      flight['Departure']['AirportCode'],
+                              departure_airport_name: Airport.where(airport_iata_code: flight['Departure']['AirportCode']).get(:airport_name),
+                              departure_time_local:   flight['Departure']['ScheduledTimeLocal']['DateTime'],
+                              arrival_airport:        flight['Arrival']['AirportCode'],
+                              arrival_airport_name:   Airport.where(airport_iata_code: flight['Arrival']['AirportCode']).get(:airport_name),
+                              arrival_time_local:     flight['Arrival']['ScheduledTimeLocal']['DateTime'],
+                              aircraft_type:          Aircraft.where(iata_aircraft_code: flight['Equipment']['AircraftCode'].to_s).get(:aircraft_name)
+                          }
+    # handle errors
+    return one_formatted_flight
   end
 
 end

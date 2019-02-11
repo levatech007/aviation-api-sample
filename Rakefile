@@ -1,3 +1,10 @@
+begin
+  require_relative '.env.rb'
+rescue LoadError
+end
+require_relative 'models'
+require './seeds/seed.rb'
+
 # Migrate
 
 migrate = lambda do |env, version|
@@ -49,10 +56,8 @@ end
 #create task to run seed files:
 desc 'Run database seed files'
 task :seed_db do
-  p("Running seed_db")
-  File.read('seeds/seed.rb')
+  SeedDatabase.new.seed_aircraft_database
 end
-
 
 # Shell
 

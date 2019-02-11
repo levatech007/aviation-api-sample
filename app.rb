@@ -12,6 +12,7 @@ class App < Roda
   plugin :halt
   # require all files from  /lib directory
   Dir['./lib/*.rb'].each {|file| require file }
+  Dir['./seeds/*.rb'].each {|file| require file }
   # require documentation
   file = File.read('documentation.json')
   documentation = JSON.parse(file)
