@@ -83,7 +83,7 @@ class LufthansaApiCalls
       journey_flights, journey_stops   = [], journey['Flight'].length - 1
       journey['Flight'].each { |flight| journey_flights.push(format_single_flight(flight))}
     else
-      journey_flights, journey_stops   = 0, format_single_flight(journey['Flight'])
+      journey_flights, journey_stops   = format_single_flight(journey['Flight']), 0
     end
 
     one_formatted_journey = {
