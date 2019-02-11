@@ -4,35 +4,35 @@ class LufthansaApiCalls
   require 'date'
   require 'rest-client'
   require './lib/gettoken.rb'
-  require './lib/airportsdata.rb'
+  require './lib/errormessages.rb'
 
   LH_BASE_URL = 'https://api.lufthansa.com/v1/operations/schedules/'
-  #url = 'https://api.lufthansa.com/v1/operations/schedules/FRA/SFO/2019-02-24?directFlights=1'
+
   def initialize(request_params)
     @departing_from = request_params['departing_from']
     @arriving_to    = request_params['arriving_to']
     @date           = request_params['date']
-    @direct_flights = request_params['direct_flights']
+    @direct_flights = request_params['direct_flights'] # should default to 0
   end
 
   def validate_request_params
     messages = []
     # vaidate iata airport code, still need to handle case sensitivity!
-    messages.push('Invalid departing_from airport code') if !Airport.find(airport_iata_code: @departing_from)
-    messages.push('Invalid arriving_to airport code')    if !Airport.find(airport_iata_code: @arriving_to)
+    messages.push(ErrorMessages::DEPARTURE_INVALID) if !Airport.find(airport_iata_code: @departing_from.upcase)
+    messages.push(ErrorMessages::ARRIVAL_INVALID)   if !Airport.find(airport_iata_code: @arriving_to.upcase)
 
     if @date.length == 10
       begin
         converted_date = Date.strptime(@date, '%Y-%m-%d')
       rescue ArgumentError => e
-        messages.push('Date is not valid')
+        messages.push(ErrorMessages::LH_DATE_INVALID)
         return { error: true, messages: messages}
       end
       if converted_date < Date.today
-        messages.push('Date is in the past')
+        messages.push(ErrorMessages::PAST_DATE)
       end
     else
-      messages.push('Date is not valid. Please check your date format ("YYYY-MM-DD").')
+      messages.push(ErrorMessages::LH_DATE_INVALID)
     end
 
     #if @direct_flights != 1 || @direct_flights != 0 # { error: "Direct flights option not selected" }
@@ -54,7 +54,7 @@ class LufthansaApiCalls
                                   headers:  { Authorization: auth, Accept: 'application/json' }
                                 ) { |response|
                                   # what happens if there are no flights to return???
-                                  # eventually return flights in order: by stops, duration
+                                  # eventually should return flights in order: by stops, duration
                                   data = JSON.parse(response)
                                   flights_data = data['ScheduleResource']['Schedule']
                                   response.code == 200 ? format_get_flights_data(flights_data) : { error: "Something went wrong with LH" }
