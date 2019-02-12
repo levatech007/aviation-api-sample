@@ -15,6 +15,7 @@ module ErrorMessages
   # Date errors
   LH_DATE_INVALID   = 'Date is not valid. Please check your date format ("YYYY-MM-DD").'
   PAST_DATE         = 'Date is in the past.'
+  FUTURE_DATE       = 'Date is too far in the future. Dates accepted for upto 364 days into the future'
 
   # Airport code errors
   DEPARTURE_INVALID = 'The departure airport code is invalid.'

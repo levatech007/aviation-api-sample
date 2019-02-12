@@ -30,6 +30,8 @@ class LufthansaApiCalls
       end
       if converted_date < Date.today
         messages.push(ErrorMessages::PAST_DATE)
+      elsif converted_date > Date.today + 364
+        messages.push(ErrorMessages::FUTURE_DATE) 
       end
     else
       messages.push(ErrorMessages::LH_DATE_INVALID)
