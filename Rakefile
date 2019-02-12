@@ -54,9 +54,17 @@ task :prod_up do
 end
 
 #create task to run seed files:
-desc 'Run database seed files'
-task :seed_db do
-  SeedDatabase.new.seed_aircraft_database
+
+
+namespace :seed do
+  desc 'Run aircraft seed database'
+  task :aircrafts do
+    SeedDatabase.new.seed_aircraft_database
+  end
+  desc 'Run destinations seed database'
+  task :destinations do
+    SeedDatabase.new.add_destinations_to_airport
+  end
 end
 
 # Shell
