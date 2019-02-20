@@ -60,8 +60,8 @@ namespace :seed do
     SeedDatabase.new.seed_aircraft_database
   end
   desc 'Run airport seed database'
-  task :aircrafts do
-    SeedDatabase.new.seed_airport_database
+  task :airports do
+    SeedDatabase.new.seed_airports_database
   end
   desc 'Run destinations seed database'
   task :destinations do

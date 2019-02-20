@@ -12,7 +12,6 @@ class App < Roda
   plugin :halt
   # require all files from  /lib directory
   Dir['./lib/*.rb'].each {|file| require file }
-  Dir['./seeds/*.rb'].each {|file| require file }
   # require documentation
   file = File.read('documentation.json')
   documentation = JSON.parse(file)
@@ -27,6 +26,8 @@ class App < Roda
     r.root do
       documentation
     end
+
+    # handle all other 404 errors for routes that don't exist
 
   end
 end
