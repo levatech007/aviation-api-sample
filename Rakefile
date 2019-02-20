@@ -53,13 +53,15 @@ task :prod_up do
   migrate.call('production', nil)
 end
 
-#create task to run seed files:
-
-
+# tasks to run seed files:
 namespace :seed do
   desc 'Run aircraft seed database'
   task :aircrafts do
     SeedDatabase.new.seed_aircraft_database
+  end
+  desc 'Run airport seed database'
+  task :aircrafts do
+    SeedDatabase.new.seed_airport_database
   end
   desc 'Run destinations seed database'
   task :destinations do
