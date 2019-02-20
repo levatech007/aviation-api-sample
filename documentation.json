@@ -20,10 +20,10 @@
                           "route_url": "/api/v1/welcome/flights",
                           "required_params": [
                                               { "param": "api_key", "type": "string", "message": "Your valid api key" },
-                                              { "param": "departing_from", "type": "string", "message": "IATA code for departure airport" },
-                                              { "param":"arriving_to", "type": "string", "message": "IATA code for destination airport" },
+                                              { "param": "from", "type": "string", "message": "IATA code for departure airport" },
+                                              { "param":"to", "type": "string", "message": "IATA code for destination airport" },
                                               { "param": "date", "type": "string", "message": "Please format the date as YYYY-MM-DD" },
-                                              { "param": "direct_flights", "type": "integer", "message": "To get only direct flights, send 1, else 0" }
+                                              { "param": "nonstop", "type": "integer", "message": "To get only direct flights, send 1, else 0" }
                                             ],
                           "notes": "Currently shows only Lufthansa and other Star Alliance flights",
                           "errors": [

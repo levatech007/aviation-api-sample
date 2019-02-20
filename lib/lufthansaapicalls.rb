@@ -9,17 +9,25 @@ class LufthansaApiCalls
   LH_BASE_URL = 'https://api.lufthansa.com/v1/operations/schedules/'
 
   def initialize(request_params)
-    @departing_from = request_params['departing_from']
-    @arriving_to    = request_params['arriving_to']
-    @date           = request_params['date']
-    @direct_flights = request_params['direct_flights'] # should default to 0
+    @from    = request_params['from']
+    @to      = request_params['to']
+    @date    = request_params['date']
+    @nonstop = request_params['nonstop'] # should default to 0
   end
 
   def validate_request_params
     messages = []
-    # vaidate iata airport code, still need to handle case sensitivity!
-    messages.push(ErrorMessages::DEPARTURE_INVALID) if !Airport.find(airport_iata_code: @departing_from.upcase)
-    messages.push(ErrorMessages::ARRIVAL_INVALID)   if !Airport.find(airport_iata_code: @arriving_to.upcase)
+    # validate airport codes
+    messages.push(ErrorMessages::DEPARTURE_INVALID) if !Airport.find(airport_iata_code: @from.upcase)
+    messages.push(ErrorMessages::ARRIVAL_INVALID)   if !Airport.find(airport_iata_code: @to.upcase)
+
+    # check if direct_flights is present
+    if @nonstop != 0 || @nonstop != 1
+      @nonstop = 0
+    end
+    # if present, it can be 1 or 0
+    # if not present, default to 0,
+    p("Param for direct flights: #{ @nonstop }")
 
     if @date.length == 10
       begin
@@ -28,19 +36,16 @@ class LufthansaApiCalls
         messages.push(ErrorMessages::LH_DATE_INVALID)
         return { error: true, messages: messages}
       end
-      if converted_date < Date.today
+      if converted_date < Date.today # make sure date is in the future
         messages.push(ErrorMessages::PAST_DATE)
-      elsif converted_date > Date.today + 364
-        messages.push(ErrorMessages::FUTURE_DATE) 
+      elsif converted_date > Date.today + 364 # but not more than 1 year into the future
+        messages.push(ErrorMessages::FUTURE_DATE)
       end
     else
       messages.push(ErrorMessages::LH_DATE_INVALID)
     end
 
-    #if @direct_flights != 1 || @direct_flights != 0 # { error: "Direct flights option not selected" }
-
-    error    = messages.size > 0 ? true : false
-    response = { error: error, messages: messages }
+    response = { error: !messages.empty? , messages: messages }
     return response
 
   end
@@ -49,21 +54,18 @@ class LufthansaApiCalls
     # Auth format LH expects: "Bearer kfu894usdbj"
     lh_token = GetToken.new.obtain_lh_token
     auth     = "#{lh_token['token_type'].capitalize} #{lh_token['access_token']}"
-    url      = LH_BASE_URL + "#{ @departing_from }/#{ @arriving_to }/#{ @date }?directFlights=#{ @direct_flights }"
+    # expected (example) url: LH_BASE_URL/SFO/FRA/2019-06-01?directFlights=1
+    url      = LH_BASE_URL + "#{ @from }/#{ @to }/#{ @date }?directFlights=#{ @nonstop }"
     RestClient::Request.execute(
                                   method:   :get,
                                   url:      url,
                                   headers:  { Authorization: auth, Accept: 'application/json' }
                                 ) { |response|
-                                  # what happens if there are no flights to return???
-                                  # eventually should return flights in order: by stops, duration
-                                  data = JSON.parse(response)
-                                  flights_data = data['ScheduleResource']['Schedule']
+                                  # add handling if there are no flights to return!
+                                  data          = JSON.parse(response)
+                                  flights_data  = data['ScheduleResource']['Schedule']
                                   response.code == 200 ? format_get_flights_data(flights_data) : { error: "Something went wrong with LH" }
-
-                                  #response.code == 200 ? JSON.parse(response) : { error: "Something went wrong with LH" } # +needs to return error code
                                 }
-
   end
 
   def format_get_flights_data(flights_data)
@@ -71,8 +73,8 @@ class LufthansaApiCalls
     flights_data.map { |journey|  journey_options.push(format_one_journey(journey))}
 
     result = {
-                results_count: flights_data.length,
-                journey_options: journey_options
+                results_count:    flights_data.length,
+                journey_options:  journey_options
               }
     # handle errors
     return result
@@ -91,7 +93,7 @@ class LufthansaApiCalls
     one_formatted_journey = {
                                #route:             "FRA to SFO via MUC", # template string of all airports
                                stops:             journey_stops,
-                               journey_duration:  journey['TotalJourney']['Duration'].gsub(/[PT]/, ""),
+                               journey_duration:  journey['TotalJourney']['Duration'].gsub(/[PT]/, ""), # LH string: "P[n]NDT[n]NH[n]NM"
                                flights:           journey_flights
                             }
     # handle errors
