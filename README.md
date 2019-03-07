@@ -10,17 +10,16 @@ Rack based API (in the future part of Volo app).
 - RestClient
 
 ## Current Features:
-- Lets a client request an api key (requires a valid email)
-- Generates and saves new api key  
-- Emails new api key to client
-- Rate limit: currently set at 10 requests per 15 minutes
-- Version control (URL)
+- Client can request an api key with a valid email
+- Generate, save, and email new api key  
+- Rate limited: currently set at 10 requests per 15 minutes
+- URL version control (/api/v1/...)
 - Request flight schedules between two airports for a given date
 - Request target airport's non-stop routes
 
 ## Third Party APIs Used:
 - [Lufthansa API (OAuth)](https://developer.lufthansa.com)
-- Google Apps Scripts to scrape Wikipedia pages for airport data (link coming soon) and manage satic data (airports, airlines, aircraft types)
+- Google Apps Scripts to scrape Wikipedia pages for airport data (link coming soon) and to manage static data (airports, airlines and aircraft types)
 
 ## Other VOLO apps:
 
