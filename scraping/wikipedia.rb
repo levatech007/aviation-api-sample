@@ -1,23 +1,27 @@
 # in the future, scrape all airport destinations from here
 require 'nokogiri'
 require 'rest-client'
-lax_url = "https://en.wikipedia.org/wiki/Los_Angeles_International_Airport"
-lax_table_number = 4
-sfo_url = "https://en.wikipedia.org/wiki/San_Francisco_International_Airport"
-sfo_table_number = 3
-sxm_url = "https://en.wikipedia.org/wiki/Princess_Juliana_International_Airport"
-sxm_table_number = 2
-wiki_page = Nokogiri::HTML(RestClient.get(sxm_url))
-table = wiki_page.css('table')[sxm_table_number] #replace idx with table number
+# https://en.wikipedia.org/wiki/List_of_airports_by_IATA_code:_A (pages organized bu alphabet)
+BASE_URL = 'https://en.wikipedia.org/wiki/List_of_airports_by_IATA_code:_A'
+alphabet = ['A'..'Z'].to_a
+#alphabet.each do |letter| end
+html = RestClient.get(BASE_URL)
+wiki_page = Nokogiri::HTML(html)
+airport_data = []
+table = wiki_page.css('table')[0]
 
-rows = table.css('tr')
-column_names = rows.shift.css('th').map(&:text)
-
-text_all_rows = rows.map do |row|
-  row_values = row.css('td').map(&:text)
-  [*row_values]
-end
-
-text_all_rows.each do |row_as_text|
-  p column_names.zip(row_as_text).to_h
+table.search('tr').each do |tr|
+  p("Row is #{ tr }")
+  table_data = tr.search('td')
+  if(!table_data[0].nil? && !table_data[1].nil? && !table_data[2].nil?)
+    airport_data.push(
+      {
+        airport_iata_code: table_data[0].children.text,
+        airport_icao_code: table_data[1].children.text,
+        airport_wiki_page: table_data[2].at('a')['href']
+      }
+    )
+    end
+  p(airport_data)
+  return airport_data
 end
