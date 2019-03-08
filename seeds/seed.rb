@@ -54,13 +54,14 @@ class SeedDatabase
 
     airports_data = get_data()
     # use 'airport_name', 'latitude', 'longitude', 'timezone', 'gmt', 'country_name', 'iso2_country_code', 'iata_city_code'
+    
     scraped_airports_data.map do |scraped_airport|
       p(scraped_airport)
       if(scraped_airport[:airport_icao_code] != "")
         airport_info = airports_data.find { |airport| airport['codeIataAirport'] ==  scraped_airport[:airport_iata_code] }
         if(!airport_info.nil?)
-      # Airport.insert(
-      # for testing, create hash, add to results array, print result
+      # Airport.insert( => replace airport_obj when seed functions finished to run database seed
+      # for testing, create airport_obj hash and print to console
           airport_obj = {
                            airport_iata_code:  scraped_airport[:airport_iata_code],
                            airport_icao_code:  scraped_airport[:airport_icao_code],
