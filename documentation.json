@@ -27,7 +27,7 @@
                                             ],
                           "notes": "Currently shows only Lufthansa and other Star Alliance flights",
                           "errors": [
-                                      { "status_code": "400", "error_messages": "Return an array of descriptive messages" }
+                                      { "status_code": "400", "error_message": "Return an array of descriptive messages" }
                                     ]
                       },
                       {

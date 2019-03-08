@@ -1,25 +1,23 @@
 class SeedDatabase
   require 'json'
   require 'rest-client'
+  Dir['./scraping/*.rb'].each {|file| require file }
 
-  def get_data(url_param)
+  def get_data_from_apps_script(url_param)
     response = RestClient.get("#{ENV['VOLO_APPS_SCRIPT_URL']}?q=#{url_param}")
     data = JSON.parse(response)
   end
 
-  # def seed_airports_database
-  #
-  # end
-
-  # def seed_airlines_database
-  #
-  # end
+  def get_data
+    response = RestClient.get("#{ENV['AIRPORT_DB_URL']}?key=#{ ENV['AIRPORT_DB_KEY'] }")
+    data = JSON.parse(response)
+  end
 
   def seed_aircraft_database
     # 2 separated sources for aircraft data:
     url_param = 'aircrafts'
     # get data from apps script sheet:
-    aircraft_data = get_data(url_param)
+    aircraft_data = get_data_from_apps_script(url_param)
     aircraft_data['data'].map do |aircraft|
       Aircraft.insert(
         iata_aircraft_code:  aircraft['iata_code'],
@@ -48,39 +46,46 @@ class SeedDatabase
   end
 
   def seed_airports_database
-    url_param = 'airports'
-    airports_data = get_data(url_param)
+    # delete all airport database entries
 
-    file = File.read('./seeds/formatted_airports_data.json')
-    airports_data_file = JSON.parse(file)
+    # get scraped data:
+    scraped_airports_data = ScrapeIataCodes.new.scrape_iata_codes # array of hashes
+    # use: 'airport_iata_code', 'airport_icao_code', 'airport_wiki_page' !!USE AIRPORTS WITH ICAO CODES!!
 
-    airports_data.map do |airport|
-      # find same airport from airport_data_file and combine the results: (match iata_code with airport_iata_code)
-      # format airport database entry
-      airport_from_file = airport_data_file.find { |airport_obj| airport_obj[:iata] == airport['airport_iata_code'] }
-      Airport.insert(
-                        airport_name:       airport_from_file['airport_name'],
-                        airport_iata_code:  airport['iata_code'],
-                        airport_icao_code:  airport_from_file['airport_icao_code'],
-                        latitude:           airport_from_file['latitude'],
-                        longitude:          airport_from_file['longitude'],
-                        timezone:           airport_from_file['timezone'],
-                        gmt:                airport_from_file['gmt'],
-                        country_name:       airport_from_file['country_name'],
-                        iso2_country_code:  airport_from_file['iso2_country_code'],
-                        iata_city_code:     airport_from_file['iata_city_code'],
-                        airport_city:       airport['city']
-                    )
-      # add airport destinations to Destinations join table
+    airports_data = get_data()
+    # use 'airport_name', 'latitude', 'longitude', 'timezone', 'gmt', 'country_name', 'iso2_country_code', 'iata_city_code'
+    scraped_airports_data.map do |scraped_airport|
+      p(scraped_airport)
+      if(scraped_airport[:airport_icao_code] != "")
+        airport_info = airports_data.find { |airport| airport['codeIataAirport'] ==  scraped_airport[:airport_iata_code] }
+        if(!airport_info.nil?)
+      # Airport.insert(
+      # for testing, create hash, add to results array, print result
+          airport_obj = {
+                           airport_iata_code:  scraped_airport[:airport_iata_code],
+                           airport_icao_code:  scraped_airport[:airport_icao_code],
+                           airport_wiki_page:  scraped_airport[:airport_wiki_page],
+                           airport_name:       airport_info['nameAirport'],
+                           latitude:           airport_info['latitudeAirport'].to_f,
+                           longitude:          airport_info['longitudeAirport'].to_f,
+                           timezone:           airport_info['timezone'],
+                           gmt:                airport_info['GMT'].to_i,
+                           country_name:       airport_info['nameCountry'],
+                           iso2_country_code:  airport_info['codeIso2Country'],
+                           iata_city_code:     airport_info['codeIataCity']
+                         }
+            p(airport_obj)
+          end
+        end
     end
+
   end
 
-  # add non-stop destinations to airports
-  def add_destinations_to_airport(airport_iata_code)
-    # get the data from apps script database
+  # add non-stop destinations to airports after seeding airports data
+  def add_destinations_to_airport
     p("Running seed destinations!")
-    url_extension = "destinations/#{ airport_iata_code }"
-    # if the airport has destinations available in apps script,
+    # run for all airports that have correct wiki page that includes '/wiki/'
+    # scrape the destinations, search through db for matching airports
     # get the airport from db, add a foreign key to Destinations join table
   end
 
@@ -103,7 +108,5 @@ class SeedDatabase
                     )
       end
   end
-
-
 
 end
