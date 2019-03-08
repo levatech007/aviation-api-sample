@@ -54,7 +54,7 @@ class SeedDatabase
 
     airports_data = get_data()
     # use 'airport_name', 'latitude', 'longitude', 'timezone', 'gmt', 'country_name', 'iso2_country_code', 'iata_city_code'
-    
+
     scraped_airports_data.map do |scraped_airport|
       p(scraped_airport)
       if(scraped_airport[:airport_icao_code] != "")
@@ -86,8 +86,10 @@ class SeedDatabase
   def add_destinations_to_airport
     p("Running seed destinations!")
     # run for all airports that have correct wiki page that includes '/wiki/'
-    # scrape the destinations, search through db for matching airports
-    # get the airport from db, add a foreign key to Destinations join table
+    # for each airport:
+      # scrape airport destinations  ScrapeAirportDestinations.new(airport_wiki_page).scrape_destinations
+      # scrape the destinations, search through db for matching airports
+      # get the airport from db, add both airports to Destinations join table
   end
 
   def seed_airlines_database
