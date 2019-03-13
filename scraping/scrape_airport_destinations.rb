@@ -17,7 +17,7 @@
     # html = RestClient.get(BASE_URL)
     wiki_page = Nokogiri::HTML(html)
     tables    = wiki_page.css('table')
-    result = {}
+
     airlines_destinations_table_found = false
 
     tables.each do |table|
@@ -26,35 +26,38 @@
 
       if !airlines_destinations_table_found
         # there is no unique id for destinations table
-        # find it by <th> value "AirlinesDestinationsRefs" or "AirlinesDestinations", contains necessary data
+        # find it by <th> value "AirlinesDestinationsRefs" or first instace of "AirlinesDestinations" => contains necessary data
         if row_name == 'AirlinesDestinationsRefs' || row_name == 'AirlinesDestinations'
           # destinations table name 'AirlinesDestinations' applies to both passenger and cargo tables.
           # First is always passenger traffic. Use T/F to make sure only first of the two tables is returned.
           airlines_destinations_table_found = true
-          all_destination_row_text  = rows.map { |row| row.css('td').map(&:text) }
-          all_destination_row_links = rows.map { |row| row.css('td a').map { |link| link['href'] } }
+          all_destinations = rows.map do |row|
+            all_destinations = row.css('td').map do |td|
+              destinations = td.text.delete(" \n").split(",")
 
-          all_destinations = []
-          all_destination_row_text.map do |row|
-            all_destinations.push(row[1].gsub(/\s+/, "")) if !row.empty? # row[1] is destinations column; remove all whitespace
+              links = td.css('a').map {|link| link['href'] }
+              # remove unnecessary links
+              cleaned_links = links.reject { |link| link.include?('#cite_note') }
+              p([destinations,cleaned_links])
+            end
           end
 
-          all_wiki_links = []
-          all_destination_row_links.map { |row| all_wiki_links.push(row[1..-1]) if !row.empty? } # take all values except first (airline link),keep last(only some have citations, remove separately)
-
-          result = {
-                      all_destinations: all_destinations,
-                      wiki_pages: all_wiki_links
-                   }
         end
       end
     end
-    #return result
-    p(result)
+
+
+
+
 
     def format_destinations(data_array)
       regular_destinations = []
       seasonal_destinations = []
+      charter_destinations = []
+      # split string initially by:
+      delimiters = ['Seasonal:', 'Seasonalcharter:']
+      all_destinations = str.split(Regexp.union(delimiters))
+
       # for each destinations array:
       # split to individual destinations
       # remove refs ex. [123]
