@@ -13,8 +13,8 @@
   seasonal_exists = false
   add_seasonal = false
   add_seasonal_charter = false
-  arr.each_with_index do |item, idx|
-    # still need to remove refs [123] form item
+  arr.each_with_index do |dest, idx|
+    item = dest.gsub(/\[[^\]]*\]/, '') # remove citations: [123]
     if add_seasonal_charter
       result << "Seasonalcharter:" + item
     elsif add_seasonal
@@ -24,10 +24,11 @@
       add_seasonal = false
       split_str = item.split("Seasonalcharter:")
       first_item = split_str.delete_at(0)
-      result << "Seasonal:" + first_item if first_item != ""
+      seasonal_exists ? result << "Seasonal:" + first_item  : result << first_item
       result << "Seasonalcharter:" + split_str.delete_at(0)
     elsif item.include?("Seasonal:")
       add_seasonal = true
+      seasonal_exists = true
       split_str = item.split("Seasonal:")
       first_item = split_str.delete_at(0)
       result << first_item if first_item != ""
@@ -36,11 +37,23 @@
       result << item
     end
      add_seasonal = false if arr[idx + 1] && arr[idx + 1].include?("Seasonalcharter:")
-
   end
   result
 end
 
+# clean destinations strings that include 'begins', 'resumes' or 'ends'
+# input: "London(beginsApril15,2020)" => ["London", "April5,2020", "begins"]
+def ending_destinations(dest_str)
+  result = []
+  types = ['begins', 'ends', 'resumes']
+  match = types.each { |type| type if dest_str.include?(type) }
+  result_arr = dest_str.split("(")
+  result << result_arr[0]
+  date = result_arr[1].gsub(/#{ match }|\)/, '')
+  result << date
+  result << match
+  result
+end
 
 
   #def scrape_destinations
@@ -85,7 +98,7 @@ end
       regular_destinations = []
       seasonal_destinations = []
       charter_destinations = []
-      
+
       # keep destination (ends ...)
       # remove destinations with (begins ...) or (resumes ...) => future destinations need to be stored separately?
       # return hash { airport_iata_code: "XXX", airport_wiki_page: "/wiki/xxxxxxxx", regular_destinations: [], seasonal_destinations: [], charter_destinations: [] }
