@@ -9,56 +9,66 @@
   # end
 
   def clean_destinations(arr)
-  result = []
-  seasonal_exists = false
-  add_seasonal = false
-  add_seasonal_charter = false
-  arr.each_with_index do |dest, idx|
-    item = dest.gsub(/\[[^\]]*\]/, '') # remove citations: [123]
-    if add_seasonal_charter
-      result << "Seasonalcharter:" + item
-    elsif add_seasonal
-      result << "Seasonal:" + item
-    elsif item.include?("Seasonalcharter:")
-      add_seasonal_charter = true
-      add_seasonal = false
-      split_str = item.split("Seasonalcharter:")
-      first_item = split_str.delete_at(0)
-      seasonal_exists ? result << "Seasonal:" + first_item  : result << first_item
-      result << "Seasonalcharter:" + split_str.delete_at(0)
-    elsif item.include?("Seasonal:")
-      add_seasonal = true
-      seasonal_exists = true
-      split_str = item.split("Seasonal:")
-      first_item = split_str.delete_at(0)
-      result << first_item if first_item != ""
-      result << "Seasonal:" + split_str.delete_at(0)
-    else
-      result << item
+  # function works but needs refactoring, not DRY, better variable names
+  # add 'Seasonal:' or 'Seasonalcharter:' to respective destinations
+    result = []
+    seasonal_exists = false # need to check if there is Seasonal; without this var, splitting "LondonSeasonalcharter:Oslo" would return ["Seasonal:London", "Seasonalcharter:Oslo"]
+    add_seasonal = false
+    add_seasonal_charter = false
+    arr.each_with_index do |dest, idx|
+      item = dest.gsub(/\[[^\]]*\]/, '') # remove citations: [123]
+      if add_seasonal_charter
+        result << "Seasonalcharter:" + item
+      elsif add_seasonal
+        result << "Seasonal:" + item
+      elsif item.include?("Seasonalcharter:")
+        add_seasonal_charter = true
+        add_seasonal = false
+        split_str = item.split("Seasonalcharter:")
+        first_item = split_str.delete_at(0)
+        seasonal_exists ? result << "Seasonal:" + first_item  : result << first_item
+        result << "Seasonalcharter:" + split_str.delete_at(0)
+      elsif item.include?("Seasonal:")
+        add_seasonal = true
+        seasonal_exists = true
+        split_str = item.split("Seasonal:")
+        first_item = split_str.delete_at(0)
+        result << first_item if first_item != ""
+        result << "Seasonal:" + split_str.delete_at(0)
+      else
+        result << item
+      end
+       add_seasonal = false if arr[idx + 1] && arr[idx + 1].include?("Seasonalcharter:")
     end
-     add_seasonal = false if arr[idx + 1] && arr[idx + 1].include?("Seasonalcharter:")
+    result
   end
-  result
-end
 
-# clean destinations strings that include 'begins', 'resumes' or 'ends'
-# input: "London(beginsApril15,2020)" => ["London", "April5,2020", "begins"]
-def ending_destinations(dest_str)
+# clean destinations strings that includes routes with 'begins', 'resumes' or 'ends'
+# "London(beginsApril15,2020)" => ["London", "begins", "April5,2020"]
+def format_transitional_destinations(dest_str)
   result = []
   types = ['begins', 'ends', 'resumes']
-  match = types.each { |type| type if dest_str.include?(type) }
+  match = types.find { |type| dest_str.include?(type) }
   result_arr = dest_str.split("(")
-  result << result_arr[0]
+  result.push(result_arr[0])
   date = result_arr[1].gsub(/#{ match }|\)/, '')
-  result << date
-  result << match
+  result.push(match, date)
   result
 end
 
+def format_destinations(data_array)
+  regular_destinations = []
+  seasonal_destinations = []
+  charter_destinations = []
+  
+  # keep destination (ends ...)
+  # remove destinations with (begins ...) or (resumes ...) => future destinations need to be stored separately?
+  # return hash { airport_iata_code: "XXX", airport_wiki_page: "/wiki/xxxxxxxx", regular_destinations: [], seasonal_destinations: [], charter_destinations: [] }
+end
 
   #def scrape_destinations
     # Zurich_Airport
-    example_url = "https://en.wikipedia.org/wiki/San_Francisco_International_Airport"
+    example_url = "https://en.wikipedia.org/wiki/Tallinn_Airport"
     # url = "#{ BASE_URL }#{ @airport_wiki_page }"
     html = RestClient.get(example_url)
     # html = RestClient.get(BASE_URL)
@@ -88,21 +98,14 @@ end
                 cleaned_destinations.zip(cleaned_links)
             end
           end
-          p(all_destinations)
+          p(all_destinations.compact)
           all_destinations
+          # format_destinations(all_destinations)
         end
       end
     end
 
-    def format_destinations(data_array)
-      regular_destinations = []
-      seasonal_destinations = []
-      charter_destinations = []
 
-      # keep destination (ends ...)
-      # remove destinations with (begins ...) or (resumes ...) => future destinations need to be stored separately?
-      # return hash { airport_iata_code: "XXX", airport_wiki_page: "/wiki/xxxxxxxx", regular_destinations: [], seasonal_destinations: [], charter_destinations: [] }
-    end
 
 
   #end
