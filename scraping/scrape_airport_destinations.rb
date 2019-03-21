@@ -9,10 +9,14 @@
   # end
 
   def clean_destinations(arr)
-  # function works but needs refactoring, not DRY, better variable names
+  # function works but needs refactoring, not DRY & needs better variable names
   # add 'Seasonal:' or 'Seasonalcharter:' to respective destinations
     result = []
-    seasonal_exists = false # need to check if there is Seasonal; without this var, splitting "LondonSeasonalcharter:Oslo" would return ["Seasonal:London", "Seasonalcharter:Oslo"]
+    # Destinations are ordered Reagular first, Seasonal second, Seasonalcharter third but one or more may not be present
+    # seasonal_exists is needed to check if there are Seasonal destinations;
+    # without this var, splitting "LondonSeasonalcharter:Oslo" would return ["Seasonal:London", "Seasonalcharter:Oslo"]
+    # when it should return ["London", "Seasonalcharter:Oslo"]
+    seasonal_exists = false
     add_seasonal = false
     add_seasonal_charter = false
     arr.each_with_index do |dest, idx|
@@ -26,7 +30,12 @@
         add_seasonal = false
         split_str = item.split("Seasonalcharter:")
         first_item = split_str.delete_at(0)
-        seasonal_exists ? result << "Seasonal:" + first_item  : result << first_item
+
+        if seasonal_exists && first_item != ""
+          result << "Seasonal:" + first_item
+        elsif first_item != ""
+          result << first_item
+        end
         result << "Seasonalcharter:" + split_str.delete_at(0)
       elsif item.include?("Seasonal:")
         add_seasonal = true
@@ -43,7 +52,7 @@
     result
   end
 
-# clean destinations strings that includes routes with 'begins', 'resumes' or 'ends'
+# clean destinations strings that includes routes with 'begins', 'resumes' or 'ends' dates
 # "London(beginsApril15,2020)" => ["London", "begins", "April5,2020"]
 def format_transitional_destinations(dest_str)
   result = []
@@ -57,13 +66,38 @@ def format_transitional_destinations(dest_str)
 end
 
 def format_destinations(data_array)
+# => each 'kind_of'_destinations = [{}, {}, {}]
+# => each object comprises of:
+#   {
+#   destination: "Airport",
+#   airport_wiki: "/wiki/Airport_Page",
+#   current: true, # not a future destination # if false, begins: date will be included
+#   seasonal: false,
+#   seasonal_charter: false,
+#   begins: date, # included if true
+#   ends: date, # included if true
+# }
   regular_destinations = []
   seasonal_destinations = []
   charter_destinations = []
-  
-  # keep destination (ends ...)
-  # remove destinations with (begins ...) or (resumes ...) => future destinations need to be stored separately?
+
+  # loop through destinations data
+  data_array.map do |single_airline_destinations|
+    single_airline_destinations.map do |destination|
+
+      if destination[0].match(/begins|resumes|ends/)
+          p(format_transitional_destinations(destination[0]))
+      # loop through individual airline destinations
+      # each array in it, check [0] for 'ending', 'begins', 'resumes'
+      # If it includes the above:
+      # format_transitional_destinations(str)
+      else
+        p(destination[0]) 
+      end
+    end
+  end
   # return hash { airport_iata_code: "XXX", airport_wiki_page: "/wiki/xxxxxxxx", regular_destinations: [], seasonal_destinations: [], charter_destinations: [] }
+
 end
 
   #def scrape_destinations
@@ -98,8 +132,8 @@ end
                 cleaned_destinations.zip(cleaned_links)
             end
           end
-          p(all_destinations.compact)
-          all_destinations
+          #p(all_destinations.compact)
+          p(format_destinations(all_destinations.compact))
           # format_destinations(all_destinations)
         end
       end
