@@ -12,7 +12,7 @@
   # function works but needs refactoring, not DRY & needs better variable names
   # add 'Seasonal:' or 'Seasonalcharter:' to respective destinations
     result = []
-    # Destinations are ordered Reagular first, Seasonal second, Seasonalcharter third but one or more may not be present
+    # Destinations are ordered Regular first, Seasonal second, Seasonalcharter third but one or more may not be present
     # seasonal_exists is needed to check if there are Seasonal destinations;
     # without this var, splitting "LondonSeasonalcharter:Oslo" would return ["Seasonal:London", "Seasonalcharter:Oslo"]
     # when it should return ["London", "Seasonalcharter:Oslo"]
@@ -56,48 +56,36 @@
 # "London(beginsApril15,2020)" => ["London", "begins", "April5,2020"]
 def format_transitional_destinations(dest_str)
   result = []
-  types = ['begins', 'ends', 'resumes']
-  match = types.find { |type| dest_str.include?(type) }
+  types  = ['begins', 'ends', 'resumes']
+  match  = types.find { |type| dest_str.include?(type) }
   result_arr = dest_str.split("(")
-  result.push(result_arr[0])
-  date = result_arr[1].gsub(/#{ match }|\)/, '')
-  result.push(match, date)
+  date = result_arr[1].gsub(/#{ match }|\)/, '') # remove the type and remaining ')'
+  result.push(result_arr[0], match, date)
   result
 end
 
 def format_destinations(data_array)
-# => each 'kind_of'_destinations = [{}, {}, {}]
-# => each object comprises of:
-#   {
-#   destination: "Airport",
-#   airport_wiki: "/wiki/Airport_Page",
-#   current: true, # not a future destination # if false, begins: date will be included
-#   seasonal: false,
-#   seasonal_charter: false,
-#   begins: date, # included if true
-#   ends: date, # included if true
-# }
-  regular_destinations = []
-  seasonal_destinations = []
-  charter_destinations = []
-
+# => each destination type array contains destinations objects [{}, {}, {}]
+# return hash with separated destinations
+  destinations = {
+    regular: [],
+    seasonal: [],
+    seasonalcharter: []
+  }
   # loop through destinations data
   data_array.map do |single_airline_destinations|
     single_airline_destinations.map do |destination|
-
-      if destination[0].match(/begins|resumes|ends/)
-          p(format_transitional_destinations(destination[0]))
-      # loop through individual airline destinations
-      # each array in it, check [0] for 'ending', 'begins', 'resumes'
-      # If it includes the above:
-      # format_transitional_destinations(str)
-      else
-        p(destination[0]) 
+      destination_types = ["Seasonalcharter", "Seasonal"]
+      current_destination = destination[0]
+      match = destination_types.find { |type| current_destination.include?(type) } || 'regular'
+      if current_destination.match(/begins|resumes|ends/)
+        current_destination = format_transitional_destinations(current_destination)
       end
+      destinations[match.downcase.to_sym].push({ destination: current_destination, wiki_page: destination[1] })
     end
   end
-  # return hash { airport_iata_code: "XXX", airport_wiki_page: "/wiki/xxxxxxxx", regular_destinations: [], seasonal_destinations: [], charter_destinations: [] }
-
+  p(destinations)
+  return destinations
 end
 
   #def scrape_destinations
@@ -132,9 +120,8 @@ end
                 cleaned_destinations.zip(cleaned_links)
             end
           end
-          #p(all_destinations.compact)
           p(format_destinations(all_destinations.compact))
-          # format_destinations(all_destinations)
+
         end
       end
     end
