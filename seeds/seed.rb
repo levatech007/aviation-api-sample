@@ -46,8 +46,7 @@ class SeedDatabase
   end
 
   def seed_airports_database
-    # delete all airport database entries
-
+    # delete all airport database entries before seeding database
     # get scraped data:
     scraped_airports_data = ScrapeIataCodes.new.scrape_iata_codes # array of hashes
     # use: 'airport_iata_code', 'airport_icao_code', 'airport_wiki_page' !!USE AIRPORTS WITH ICAO CODES!!
@@ -56,13 +55,10 @@ class SeedDatabase
     # use 'airport_name', 'latitude', 'longitude', 'timezone', 'gmt', 'country_name', 'iso2_country_code', 'iata_city_code'
 
     scraped_airports_data.map do |scraped_airport|
-      p(scraped_airport)
-      if(scraped_airport[:airport_icao_code] != "")
+      if(scraped_airport[:airport_icao_code] != "") # icao code exists only for airports; iata also includes bus and train stations
         airport_info = airports_data.find { |airport| airport['codeIataAirport'] ==  scraped_airport[:airport_iata_code] }
         if(!airport_info.nil?)
-      # Airport.insert( => replace airport_obj when seed functions finished to run database seed
-      # for testing, create airport_obj hash and print to console
-          airport_obj = {
+          Airport.insert(
                            airport_iata_code:  scraped_airport[:airport_iata_code],
                            airport_icao_code:  scraped_airport[:airport_icao_code],
                            airport_wiki_page:  scraped_airport[:airport_wiki_page],
@@ -74,22 +70,34 @@ class SeedDatabase
                            country_name:       airport_info['nameCountry'],
                            iso2_country_code:  airport_info['codeIso2Country'],
                            iata_city_code:     airport_info['codeIataCity']
-                         }
-            p(airport_obj)
-          end
+                         )
         end
+      end
     end
 
   end
 
   # add non-stop destinations to airports after seeding airports data
   def add_destinations_to_airport
-    p("Running seed destinations!")
     # run for all airports that have correct wiki page that includes '/wiki/'
-    # for each airport:
-      # scrape airport destinations  ScrapeAirportDestinations.new(airport_wiki_page).scrape_destinations
-      # scrape the destinations, search through db for matching airports
-      # get the airport from db, add both airports to Destinations join table
+    Airport.each do |airport|
+      # if the airport has a wiki page that includes /wiki/:
+      if airport[:airport_wiki_page].include?('/wiki/')
+        p(airport)
+        destinations = ScrapeAirportDestinations.new(airport[:airport_wiki_page]).scrape_destinations
+        # loop through all destinations and add unique to Destination table
+        if destinations.kind_of?(String) # if no destinations are found (usual for smaller airports), string is returned for now
+         p(destinations)
+        else
+          destinations.each do |destination| # => object with 'regular', 'seasonal', 'seasonalcharter' keys
+          #destination[:regular]
+          # check if association already exists
+          #Destination.insert(airport_id: airport.id, destination_id: destination.id)
+          p(destination)
+          end
+        end
+      end
+    end
   end
 
   def seed_airlines_database
