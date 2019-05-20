@@ -1,4 +1,6 @@
 # Volo Aviation API
+*** Please note that this is only a small sample code for this api ***
+
 Rack based API (in the future part of Volo app).  
 
 ## Technologies:
