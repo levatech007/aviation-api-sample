@@ -69,6 +69,14 @@ namespace :seed do
   end
 end
 
+# tasks to be scheduled
+namespace :tokens do
+  desc 'Get Lufthansa token'
+  task :lh do
+    GetToken.new.obtain_lh_token
+  end
+end
+
 # Shell
 
 irb = proc do |env|
