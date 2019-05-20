@@ -79,21 +79,41 @@ class SeedDatabase
 
   # add non-stop destinations to airports after seeding airports data
   def add_destinations_to_airport
+    # move to store these in Redis in the future
     # run for all airports that have correct wiki page that includes '/wiki/'
     Airport.each do |airport|
       # if the airport has a wiki page that includes /wiki/:
+      # (although most other links should be eliminated, keep below as a safeguard for now):
       if airport[:airport_wiki_page].include?('/wiki/')
-        p(airport)
         destinations = ScrapeAirportDestinations.new(airport[:airport_wiki_page]).scrape_destinations
-        # loop through all destinations and add unique to Destination table
-        if destinations.kind_of?(String) # if no destinations are found (usual for smaller airports), string is returned for now
-         p(destinations)
-        else
-          destinations.each do |destination| # => object with 'regular', 'seasonal', 'seasonalcharter' keys
-          #destination[:regular]
-          # check if association already exists
-          #Destination.insert(airport_id: airport.id, destination_id: destination.id)
-          p(destination)
+
+        unless destinations.kind_of?(String) # if no destinations are found (usual for smaller airports), string is returned for now
+          unless destinations[:regular].empty? # some smaller airports don't have regularly scheduled flights
+            destinations[:regular].each do |destination| # => object with 'regular', 'seasonal', 'seasonalcharter' keys
+              # some still have no wiki page link:
+              unless destination[:wiki_page].nil?
+                # find destination airport by wiki page
+                # some wiki page links are not an exact match in different locations
+                destination_airport = Airport.find(airport_wiki_page: destination[:wiki_page])
+                # if destination airport is not found, scrape the iata code separately from airport wiki page:
+                if destination_airport.nil?
+                  destination_airport_iata_code = ScrapeAirportIataCode.new(destination[:wiki_page]).get_airport_iata_code
+                  # set the wiki page to airport_wiki_page_alternate in DB
+                  destination_airport = Airport.find(airport_iata_code: destination_airport_iata_code)
+                  if !destination_airport.nil? && destination_airport[:airport_iata_code].length == 3 # iata code is 3 chars, sometimes returns icao code
+                    destination_airport.update(alternate_airport_wiki_page: destination[:wiki_page])
+                  end
+                end
+                  # if found, add to destinations table
+                  # check that the association doesn't already exists
+                unless destination_airport.nil?
+                  if Destination.find(airport_id: airport[:id], destination_id: destination_airport[:id]).nil?
+                    # enter new association
+                    Destination.insert(airport_id: airport[:id], destination_id: destination_airport[:id])
+                  end
+                end
+              end
+            end
           end
         end
       end
