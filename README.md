@@ -32,6 +32,5 @@ Rack based API (in the future part of Volo app).
 
 ## Future Features:
 
-- Rate Limit (requests per day) - simple version working
+- Tiered rate limit (requests per day) - simple version working
 - Incorporate more 3rd party APIs to get better flight schedule data (currently only Star Alliance flights are available)
-- Destinations are available only for 3 airports at the moment (SFO, LAX, SXM)
