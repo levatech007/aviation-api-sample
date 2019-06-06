@@ -14,9 +14,9 @@ Rack based API (in the future part of Volo app).
 - Heroku
 
 ## Current Features:
-- Client can request an api key with a valid email
-- Generate, save, and email new api key  
-- Rate limited: currently set at 10 requests per 15 minutes
+- User can request an api key with a valid email
+- Generate, save, and email new api key to user 
+- Rate limited: currently set to 10 requests per 15 minutes
 - URL version control (/api/v1/...)
 - Request flight schedules between two airports for a given date
 - Request target airport's non-stop routes
