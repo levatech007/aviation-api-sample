@@ -8,6 +8,7 @@ module ErrorMessages
 
   # API request error messages
   CHECK_SPELLING    = 'Please check your spelling and formatting of the request.'
+  MISSING_PARAMS    = 'Missing the following required params: '
 
   # General errors
   GENERAL_ERROR     = 'Something went wrong. Please try again later.'
@@ -17,6 +18,7 @@ module ErrorMessages
   INVALID_DATE_RANGE  = 'Date is out of available range'
 
   # Airport code errors
+  INVALID_AIRPORT_CODE = 'Invalid airport code for: '
   DEPARTURE_INVALID = 'The departure airport code is invalid.'
   ARRIVAL_INVALID   = 'The arrival airport code is invalid.'
 end
