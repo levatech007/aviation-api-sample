@@ -2,26 +2,40 @@ class App
   require 'rest-client'
 
   route 'v1' do |r|
+    request_params = Hash[r.params.map{|(k,v)| [k.to_sym,v]}]
+    p request_params
+    user_api_key = request_params[:api_key]
+    p(user_api_key)
     r.on 'welcome' do
       # check that there is a (valid) api key and rate limit hasn't been exceeded before proceeding to routes
-      api_key = r.params['api_key']
-      if api_key != ""
-        if ValidateApiKey.new(api_key).api_key_valid?
-          if RateLimiting.new.rate_limit_not_exceeded?(api_key)
+      unless user_api_key.nil? || user_api_key.empty?
+        if ValidateApiKey.new(user_api_key).api_key_valid?
+          if RateLimiting.new.rate_limit_not_exceeded?(user_api_key)
+
             # begin routes
             r.get 'flights' do
-              params_hash = Hash[r.params.map{|(k,v)| [k.to_sym,v]}] # keys need to be converted to symbols for Validations to work!
-              request = LufthansaApiCalls.new(params_hash).validate_request_params
-              request[:error] ? r.halt(400, errors: request[:messages]) : LufthansaApiCalls.new(params_hash).get_flights
+              # Required params: from, to, date
+              # Optional params: nonstop
+              p("request_params")
+              p(request_params)
+              flights_param_validations = ParamValidations.new.validate_flight_request_params(request_params)
+              # flights_param_validations[:response] is params hash if no errors are found
+              unless flights_param_validations[:errors]
+                p("No errors")
+                p(flights_param_validations[:response])
+                # LufthansaApiCalls.new(request_params).get_flights
+              else
+                r.halt(400, id: ErrorMessages::BAD_REQUEST, errors: flights_param_validations[:response])
+              end
             end
 
             r.get 'destinations' do
-              airport = r.params['airport']
+              airport = request_params[:airport]
               unless airport.nil? || airport.empty?
                 # validate airport code
                 # get all selected airport destinations
-                validations = ParamValidations.new(r.params).validate_request_params
-                request[:error] ? r.halt(400, errors: request[:messages]) : Airports.new(r.params['airport']).get_airport_non_stop_destinations
+                destinations_request = ParamValidations.new(r.params).validate_request_params
+                destinations_request[:error] ? r.halt(400, errors: destinations_request[:messages]) : Airports.new(request_params[:airport]).get_airport_non_stop_destinations
               else
                 r.halt(400, message: ErrorMessages::MISSING_PARAMS )
               end
