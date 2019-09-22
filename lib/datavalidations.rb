@@ -1,3 +1,4 @@
+# General data validations
 class DataValidations
   require 'date'
 
@@ -16,10 +17,10 @@ class DataValidations
       begin
         converted_date = Date.strptime(@date, '%Y-%m-%d')
         unless converted_date.between?(@@today, @@max_date)
-          @date_errors.push(ErrorMessages::INVALID_DATE_RANGE )
+          @date_errors.push(ErrorMessages::INVALID_DATE_RANGE)
         end
       rescue ArgumentError => error
-          @date_errors.push(error.message.capitalize)
+        @date_errors.push(error.message.capitalize)
       end
     else
       @date_errors.push(ErrorMessages::INVALID_DATE_FORMAT)
