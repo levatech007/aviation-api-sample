@@ -53,11 +53,15 @@ class ParamValidations
   def validate_nonstop_selection
     # check if nonstop is 1 or 0
     # if missing, set default of 0 and add to @request_params
-      if @request_params.key?(:nonstop)
+      if @request_params.key? :nonstop
         # check if key is 1 or 0
-
+        unless @nonstop == 0 || @nonstop == 1
+          # set to 0 if incorrect
+          @request_params[:nonstop] = 0
+        end
       else
         # add nonstop default value to @request_params
+        @request_params[:nonstop] = 0
       end
   end
 
