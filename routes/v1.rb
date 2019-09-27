@@ -10,6 +10,8 @@ class App
         if ValidateApiKey.new(user_api_key).api_key_valid?
           if RateLimiting.new.rate_limit_not_exceeded?(user_api_key)
             # begin routes
+
+            # /v1/welcome/flights?from=XXX&to=YYY&date=YYYY-MM-DD&nonstop=1
             r.get 'flights' do
               # Required params: from, to, date
               # Optional params: nonstop
@@ -22,15 +24,20 @@ class App
               end
             end
 
+            # /v1/welcome/destinations?airport=XXX
             r.get 'destinations' do
               airport = request_params[:airport]
               unless airport.nil? || airport.empty?
                 # validate airport code
                 # get all selected airport destinations
-                destinations_request = ParamValidations.new(r.params).validate_request_params
-                destinations_request[:error] ? r.halt(400, errors: destinations_request[:messages]) : Airports.new(request_params[:airport]).get_airport_non_stop_destinations
+                destinations_request = ParamValidations.new.validate_request_params(airport)
+                unless destinations_request[:error]
+                  Airports.new(airport).get_airport_non_stop_destinations
+                else
+                  r.halt(400, id: ErrorMessages::BAD_REQUEST, errors: destinations_request[:response])
+                end
               else
-                r.halt(400, message: ErrorMessages::MISSING_PARAMS )
+                r.halt(400, id: ErrorMessages::BAD_REQUEST, message: ErrorMessages::MISSING_PARAMS )
               end
             end
 
