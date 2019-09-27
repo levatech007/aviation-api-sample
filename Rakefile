@@ -4,6 +4,7 @@ rescue LoadError
 end
 require_relative 'models'
 require './seeds/seed.rb'
+require './lib/gettoken.rb'
 
 # Migrate
 
