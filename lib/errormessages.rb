@@ -21,4 +21,6 @@ module ErrorMessages
   INVALID_AIRPORT_CODE = 'Invalid airport code for: '
   DEPARTURE_INVALID = 'The departure airport code is invalid.'
   ARRIVAL_INVALID   = 'The arrival airport code is invalid.'
+
+  BAD_REQUEST = "Bad request"
 end
