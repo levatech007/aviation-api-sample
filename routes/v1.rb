@@ -3,27 +3,20 @@ class App
 
   route 'v1' do |r|
     request_params = Hash[r.params.map{|(k,v)| [k.to_sym,v]}]
-    p request_params
     user_api_key = request_params[:api_key]
-    p(user_api_key)
     r.on 'welcome' do
       # check that there is a (valid) api key and rate limit hasn't been exceeded before proceeding to routes
       unless user_api_key.nil? || user_api_key.empty?
         if ValidateApiKey.new(user_api_key).api_key_valid?
           if RateLimiting.new.rate_limit_not_exceeded?(user_api_key)
-
             # begin routes
             r.get 'flights' do
               # Required params: from, to, date
               # Optional params: nonstop
-              p("request_params")
-              p(request_params)
               flights_param_validations = ParamValidations.new.validate_flight_request_params(request_params)
               # flights_param_validations[:response] is params hash if no errors are found
               unless flights_param_validations[:errors]
-                p("No errors")
-                p(flights_param_validations[:response])
-                # LufthansaApiCalls.new(request_params).get_flights
+                LufthansaApiCalls.new(flights_param_validations[:response]).get_flights
               else
                 r.halt(400, id: ErrorMessages::BAD_REQUEST, errors: flights_param_validations[:response])
               end
